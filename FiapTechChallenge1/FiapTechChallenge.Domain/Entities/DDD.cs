@@ -1,9 +1,14 @@
-﻿namespace FiapTechChallenge.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FiapTechChallenge.Domain.Entities
 {
     public class DDD : EntityCore
     {
         public int DDDNumber { get; set; }
-        public State State { get; set; }
+        [ForeignKey("StateId")]
+        public virtual State State { get; set; }
+        public ICollection<Phone> Phones { get; set; }
+        public int StateId { get; set; }
     }
 
 }

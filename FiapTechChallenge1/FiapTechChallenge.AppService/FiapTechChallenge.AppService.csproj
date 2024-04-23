@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FiapTechChallenge.Domain\FiapTechChallenge.Domain.csproj" />
+    <ProjectReference Include="..\FiapTechChallenge.Infra\FiapTechChallenge.Infra.csproj" />
+  </ItemGroup>
+
 </Project>
