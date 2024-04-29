@@ -7,5 +7,11 @@ namespace FiapTechChallenge.API.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
+        [HttpGet]
+        public async Task<IActionResult> GetAllContacts()
+        {
+
+        }
+
     }
 }

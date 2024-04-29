@@ -2,7 +2,7 @@
 
 namespace FiapTechChallenge.Infra.Interfaces
 {
-    public interface IRepository<T> where T : class
+    public interface IBaseRepository<T> where T : class
     {
         T Find(int id);
         Task<T> FindAsync(int id);
