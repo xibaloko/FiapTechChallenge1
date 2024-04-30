@@ -161,8 +161,6 @@ namespace FiapTechChallenge.Infra.Repositories
         public void Update(T entity)
         {
             dbSet.Update(entity);
-            //Removi esse save pois devemos chamar o save depois
-            //_db.SaveChanges();
         }
 
         public void AddBulk(IEnumerable<T> entityes)

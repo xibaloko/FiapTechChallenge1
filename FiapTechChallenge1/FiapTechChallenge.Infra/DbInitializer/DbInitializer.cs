@@ -24,9 +24,40 @@ namespace FiapTechChallenge.Infra.DbInitializer
 
                 // Adicione aqui o código para inserir os dados iniciais
                 // Exemplo:
-                context.People.Add(new Person
+                context.Regions.Add(new Region
                 {
-                    // props
+                    RegionName = "Sudeste",
+                    States = new List<State>
+                    {
+                        new State()
+                        {
+                            StateName = "São Paulo",
+                            UF = "SP",
+                            DDDs = new List<DDD>()
+                            {
+                                new DDD()
+                                {
+                                    DDDNumber = 11,
+                                    Created = DateTime.Now,
+                                    Modified = DateTime.Now,
+                                },
+                                new DDD()
+                                {
+                                     DDDNumber = 12,
+                                     Created = DateTime.Now,
+                                     Modified = DateTime.Now,
+                                }
+                            },
+                            Created = DateTime.Now,
+                            Modified = DateTime.Now
+                        },
+                        new State()
+                        {
+
+                        },
+                    },
+                    Created = DateTime.Now,
+                    Modified = DateTime.Now
                 });
 
                 // Salve as alterações no banco de dados
