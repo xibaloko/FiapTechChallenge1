@@ -2,6 +2,6 @@
 {
     public interface IDbInitializer
     {
-        void Initialize(IServiceProvider serviceProvider);
+        void Initialize();
     }
 }

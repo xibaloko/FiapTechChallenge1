@@ -1,9 +1,9 @@
 ﻿using FiapTechChallenge.Domain.Entities;
 using System.Linq.Expressions;
 
-namespace FiapTechChallenge.Infra.Interfaces
+namespace FiapTechChallenge.AppService.Interfaces
 {
-    public interface IBaseRepository<T> where T : EntityCore
+    public interface IApplicationServiceBase<T> where T : EntityCore
     {
         T Find(int id);
         Task<T> FindAsync(int id);

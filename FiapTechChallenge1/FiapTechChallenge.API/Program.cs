@@ -1,4 +1,5 @@
 using FiapTechChallenge.Infra.Data;
+using FiapTechChallenge.Infra.DbInitializer;
 using FiapTechChallenge.Infra.Interfaces;
 using FiapTechChallenge.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 },  ServiceLifetime.Scoped);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -32,8 +34,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+SeedDatabase();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}

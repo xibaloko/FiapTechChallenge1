@@ -1,11 +1,12 @@
-﻿using FiapTechChallenge.Infra.Data;
+﻿using FiapTechChallenge.Domain.Entities;
+using FiapTechChallenge.Infra.Data;
 using FiapTechChallenge.Infra.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace FiapTechChallenge.Infra.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : EntityCore
     {
         private readonly AppDbContext _db;
         internal DbSet<T> dbSet;

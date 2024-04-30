@@ -8,21 +8,24 @@ namespace FiapTechChallenge.Infra.DbInitializer
 {
     public class DbInitializer : IDbInitializer
     {
-        public void Initialize(IServiceProvider serviceProvider)
+        private readonly IServiceProvider _serviceProvider;
+
+        public DbInitializer(IServiceProvider serviceProvider)
         {
-            using (var context = new AppDbContext(serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>()))
+            _serviceProvider = serviceProvider;
+        }
+
+        public void Initialize()
+        {
+            using (var context = new AppDbContext(_serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>()))
             {
-                // Verifica se o banco de dados já foi criado
                 context.Database.EnsureCreated();
 
-                // Verifica se já existem dados
                 if (context.Regions.Any())
                 {
-                    // Se já existirem dados, não faz nada
                     return;
                 }
 
-                // Código para inserir os dados iniciais
                 context.Regions.Add(new Region
                 {
                     RegionName = "Centro-Oeste",
@@ -173,7 +176,9 @@ namespace FiapTechChallenge.Infra.DbInitializer
                                     Created = DateTime.Now,
                                     Modified = DateTime.Now
                                 },
-                            }
+                            },
+                             Created = DateTime.Now,
+                             Modified = DateTime.Now
                         },
                         new State()
                         {
@@ -783,7 +788,7 @@ namespace FiapTechChallenge.Infra.DbInitializer
                     Modified = DateTime.Now
                 });
 
-                // Salve as alterações no banco de dados
+                
                 context.SaveChanges();
             }
         }
