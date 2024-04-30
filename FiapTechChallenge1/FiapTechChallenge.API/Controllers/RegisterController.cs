@@ -23,7 +23,7 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("all-contacts")]
         public async Task<IActionResult> GetAllContacts()
         {
-            var contacts = await _unitOfWork.Person.GetAllAsync(includeProperties: "Phones");
+            var contacts = await _unitOfWork.Person.GetAllAsync(includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
 
             if (contacts != null)
             {
@@ -51,7 +51,7 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("contact-by-id/{id}")]
         public async Task<IActionResult> GetContactById(int id)
         {
-            var contact = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id);
+            var contact = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
 
             if (contact != null)
             {
@@ -79,7 +79,7 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("contacts-by-region-id/{id}")]
         public async Task<IActionResult> GetContactsByRegion(int id)
         {
-            var contacts = await _unitOfWork.Person.GetAllAsync(x => x.Phones.Any(y => y.DDD.State.RegionId == id), includeProperties: "Phones,Phones.DDD,Phones.DDD.State");
+            var contacts = await _unitOfWork.Person.GetAllAsync(x => x.Phones.Any(y => y.DDD.State.RegionId == id), includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
 
             if (contacts != null)
             {
@@ -107,6 +107,24 @@ namespace FiapTechChallenge.API.Controllers
         [HttpPost("create-contact")]
         public async Task<IActionResult> CreateContact([FromBody] PersonRequestDto personDto)
         {
+            var person = new Person()
+            {
+                Name = personDto.Name,
+                Birthday = personDto.Birthday,
+                CPF = personDto.CPF,
+                Email = personDto.Email,
+                Created = DateTime.Now,
+                Modified = DateTime.Now,
+                Phones = personDto.Phones.Select(x => new Phone()
+                {
+                    PhoneNumber = x.PhoneNumber,
+                    PhoneTypeId = x.PhoneTypeId,
+                    DDDId = x.DDDId,
+                }).ToList()
+            };
+
+            await _unitOfWork.Person.AddAsync(person);
+            _unitOfWork.Save();
 
             return Ok();
         }
