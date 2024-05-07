@@ -1,13 +1,19 @@
 ﻿using FiapTechChallenge.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace FiapTechChallenge.Domain.DTOs.RequestsDto
 {
     public class PersonRequestDto
     {
-        public string Name { get; set; }
-        public string CPF { get; set; }
+        [Required]
+        public required string Name { get; set; }
+        [Required]
+        public required string CPF { get; set; }
+        [Required]
         public DateTime Birthday { get; set; }
-        public string Email { get; set; }
-        public ICollection<PhoneRequestDto> Phones { get; set; }
+        [Required]
+        [EmailAddress]
+        public required string Email { get; set; }
+        public required ICollection<PhoneRequestDto> Phones { get; set; }
     }
 }

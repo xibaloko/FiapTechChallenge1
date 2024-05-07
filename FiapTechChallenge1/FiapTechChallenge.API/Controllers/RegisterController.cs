@@ -59,9 +59,9 @@ namespace FiapTechChallenge.API.Controllers
                 {
                     Id = contact.Id,
                     Name = contact.Name,
-                    Birthday= contact.Birthday,
+                    Birthday = contact.Birthday,
                     CPF = contact.CPF,
-                    Email= contact.Email,
+                    Email = contact.Email,
                     Phones = contact.Phones.Select(x => new PhoneResponseDto()
                     {
                         DDD = x.DDD.DDDNumber,
@@ -107,6 +107,11 @@ namespace FiapTechChallenge.API.Controllers
         [HttpPost("create-contact")]
         public async Task<IActionResult> CreateContact([FromBody] PersonRequestDto personDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var person = new Person()
             {
                 Name = personDto.Name,
@@ -126,14 +131,58 @@ namespace FiapTechChallenge.API.Controllers
             await _unitOfWork.Person.AddAsync(person);
             _unitOfWork.Save();
 
-            return Ok();
+            return CreatedAtAction(nameof(GetContactById), new { id = person.Id });
         }
 
         [HttpPut("update-contact/{id}")]
-        public async Task<IActionResult> UpdateContact(int id, [FromBody] Person person)
+        public async Task<IActionResult> UpdateContact(int id, [FromBody] PersonRequestDto personDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok();
+            var person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
+
+            person.Name = personDto.Name;
+            person.Birthday = personDto.Birthday;
+            person.CPF = personDto.CPF;
+            person.Email = personDto.Email;
+            person.Modified = DateTime.Now;
+
+            if (personDto.Phones.Count > 0)
+            {
+                person.Phones.Clear();
+
+                person.Phones = personDto.Phones.Select(x => new Phone()
+                {
+                    PhoneNumber = x.PhoneNumber,
+                    PhoneTypeId = x.PhoneTypeId,
+                    DDDId = x.DDDId,
+                }).ToList();
+            }
+            
+            _unitOfWork.Person.Update(person);
+            _unitOfWork.Save();
+
+            var phoneTypes = await _unitOfWork.PhoneType.GetAllAsync();
+
+            var response = new PersonResponseDto()
+            {
+                Id = person.Id,
+                Name = person.Name,
+                Birthday = person.Birthday,
+                CPF = person.CPF,
+                Email = person.Email,
+                Phones = person.Phones.Select(x => new PhoneResponseDto()
+                {
+                    DDD = x.DDD.DDDNumber,
+                    PhoneNumber = x.PhoneNumber,
+                    PhoneType = phoneTypes.FirstOrDefault(p => p.Id == x.PhoneTypeId).Description,
+                }).ToList()
+            };
+
+            return Ok(response);
         }
 
         [HttpDelete("delete-contact/{id}")]
