@@ -4,6 +4,8 @@ using FiapTechChallenge.Infra.Interfaces;
 using FiapTechChallenge.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,11 @@ builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fiap TechChallenge", Version = "v1" });
+});
 
 var app = builder.Build();
 

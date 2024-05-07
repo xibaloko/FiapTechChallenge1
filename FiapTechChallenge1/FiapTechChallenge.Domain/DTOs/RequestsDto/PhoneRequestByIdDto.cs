@@ -2,7 +2,7 @@
 
 namespace FiapTechChallenge.Domain.DTOs.RequestsDto
 {
-    public class PhoneRequestDto
+    public class PhoneRequestByIdDto
     {
         [Required]
         [StringLength(20)]
