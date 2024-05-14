@@ -3,86 +3,92 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FiapTechChallenge.AppService.Interfaces;
+using FiapTechChallenge.AppService.Services;
+using FiapTechChallenge.Domain.DTOs.RequestsDto;
+using FiapTechChallenge.Domain.DTOs.ResponsesDto;
+using FiapTechChallenge.Domain.Entities;
+using FiapTechChallenge.Infra.Interfaces;
 
 namespace FiapTechChallenge.Tests
 {
-    public class CadastroContatosTestes
+    public class ContactsRegistrationTests
     {
         [Fact]
-        public void AdicionarContato_DeveAdicionarNovoContato()
+        public void AddContact_ShouldAddNewContact()
         {
             // Arrange
-            var cadastro = new CadastroContatos();
-            var contato = new Contato("Fulano", "123456789", "fulano@example.com", "DDD1");
+            var registry = new ContactsRegistry();
+            var contact = new Contact("John Doe", "123456789", "john.doe@example.com", "DDD1");
 
             // Act
-            cadastro.AdicionarContato(contato);
+            registry.AddContact(contact);
 
             // Assert
-            Assert.Contains(contato, cadastro.Contatos);
+            Assert.Contains(contact, registry.Contacts);
         }
 
-        // Outros testes para validação de entrada, etc.
+        // Other tests for input validation, etc.
     }
 
-    public class ConsultaContatosTestes
+    public class ContactsQueryTests
     {
         [Fact]
-        public void ConsultarContatosPorDDD_DeveRetornarContatosComOMesmoDDD()
+        public void QueryContactsByDDD_ShouldReturnContactsWithSameDDD()
         {
             // Arrange
-            var consulta = new ConsultaContatos();
-            var cadastro = new CadastroContatos();
-            var contato1 = new Contato("Fulano", "123456789", "fulano@example.com", "DDD1");
-            var contato2 = new Contato("Ciclano", "987654321", "ciclano@example.com", "DDD2");
-            cadastro.AdicionarContato(contato1);
-            cadastro.AdicionarContato(contato2);
+            var query = new ContactsQuery();
+            var registry = new ContactsRegistry();
+            var contact1 = new Contact("John Doe", "123456789", "john.doe@example.com", "DDD1");
+            var contact2 = new Contact("Jane Smith", "987654321", "jane.smith@example.com", "DDD2");
+            registry.AddContact(contact1);
+            registry.AddContact(contact2);
 
             // Act
-            var contatosFiltrados = consulta.ConsultarContatosPorDDD("DDD1");
+            var filteredContacts = query.QueryContactsByDDD("DDD1");
 
             // Assert
-            Assert.Contains(contato1, contatosFiltrados);
-            Assert.DoesNotContain(contato2, contatosFiltrados);
+            Assert.Contains(contact1, filteredContacts);
+            Assert.DoesNotContain(contact2, filteredContacts);
         }
 
-        // Outros testes para casos de consulta vazia, etc.
+        // Other tests for empty query cases, etc.
     }
 
-    public class AtualizacaoExclusaoContatosTestes
+    public class ContactsUpdateDeletionTests
     {
         [Fact]
-        public void AtualizarContato_DeveAtualizarContatoExistente()
+        public void UpdateContact_ShouldUpdateExistingContact()
         {
             // Arrange
-            var cadastro = new CadastroContatos();
-            var contato = new Contato("Fulano", "123456789", "fulano@example.com", "DDD1");
-            cadastro.AdicionarContato(contato);
-            var novoContato = new Contato("Beltrano", "987654321", "beltrano@example.com", "DDD1");
+            var registry = new ContactsRegistry();
+            var contact = new Contact("John Doe", "123456789", "john.doe@example.com", "DDD1");
+            registry.AddContact(contact);
+            var newContact = new Contact("Jane Smith", "987654321", "jane.smith@example.com", "DDD1");
 
             // Act
-            cadastro.AtualizarContato(contato, novoContato);
+            registry.UpdateContact(contact, newContact);
 
             // Assert
-            Assert.Contains(novoContato, cadastro.Contatos);
-            Assert.DoesNotContain(contato, cadastro.Contatos);
+            Assert.Contains(newContact, registry.Contacts);
+            Assert.DoesNotContain(contact, registry.Contacts);
         }
 
         [Fact]
-        public void ExcluirContato_DeveExcluirContatoExistente()
+        public void DeleteContact_ShouldDeleteExistingContact()
         {
             // Arrange
-            var cadastro = new CadastroContatos();
-            var contato = new Contato("Fulano", "123456789", "fulano@example.com", "DDD1");
-            cadastro.AdicionarContato(contato);
+            var registry = new ContactsRegistry();
+            var contact = new Contact("John Doe", "123456789", "john.doe@example.com", "DDD1");
+            registry.AddContact(contact);
 
             // Act
-            cadastro.ExcluirContato(contato);
+            registry.DeleteContact(contact);
 
             // Assert
-            Assert.DoesNotContain(contato, cadastro.Contatos);
+            Assert.DoesNotContain(contact, registry.Contacts);
         }
 
-        // Outros testes para casos de atualização/exclusão de contatos inexistentes, etc.
+        // Other tests for updating/deleting non-existing contacts, etc.
     }
 }
