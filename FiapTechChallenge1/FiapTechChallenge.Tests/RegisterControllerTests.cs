@@ -125,8 +125,8 @@ namespace FiapTechChallenge.Tests
             Assert.Equal("john.doe@example.com", personResponseDto.Email);
             Assert.Single(personResponseDto.Phones);
             var phoneResponseDto = personResponseDto.Phones.First();
-            Assert.Equal("Home", phoneResponseDto.PhoneType);
-            Assert.Equal("DDD1", phoneResponseDto.DDD);
+            Assert.Equal("Residencial", phoneResponseDto.PhoneType);
+            Assert.Equal(11, phoneResponseDto.DDD);
             Assert.Equal("123456789", phoneResponseDto.PhoneNumber);
         }
 
@@ -156,7 +156,7 @@ namespace FiapTechChallenge.Tests
                 Email = "john.doe@example.com",
                 Phones = new[]
                 {
-                    new Phone { PhoneNumber = "123456789", DDD = new DDD { DDDNumber = "DDD1" }, PhoneType = new PhoneType { Description = "Home" } }
+                    new Phone { PhoneNumber = "123456789", DDD = new DDD { DDDNumber = 11 }, PhoneType = new PhoneType { Description = "Residencial" } }
                 }
             };
 
@@ -173,8 +173,8 @@ namespace FiapTechChallenge.Tests
             Assert.Equal("john.doe@example.com", response.Email);
             Assert.Single(response.Phones);
             var phoneResponseDto = response.Phones.First();
-            Assert.Equal("Home", phoneResponseDto.PhoneType);
-            Assert.Equal("DDD1", phoneResponseDto.DDD);
+            Assert.Equal("Residencial", phoneResponseDto.PhoneType);
+            Assert.Equal(11, phoneResponseDto.DDD);
             Assert.Equal("123456789", phoneResponseDto.PhoneNumber);
         }
 
@@ -210,7 +210,7 @@ namespace FiapTechChallenge.Tests
                     Email = "john.doe@example.com",
                     Phones = new[]
                     {
-                        new Phone { PhoneNumber = "123456789", DDD = new DDD { State = new State { RegionId = 1 } }, PhoneType = new PhoneType { Description = "Home" } }
+                        new Phone { PhoneNumber = "123456789", DDD = new DDD { State = new State { RegionId = 1 } }, PhoneType = new PhoneType { Description = "Residencial" } }
                     }
                 }
             };
@@ -230,7 +230,7 @@ namespace FiapTechChallenge.Tests
             Assert.Equal("john.doe@example.com", personResponseDto.Email);
             Assert.Single(personResponseDto.Phones);
             var phoneResponseDto = personResponseDto.Phones.First();
-            Assert.Equal("Home", phoneResponseDto.PhoneType);
+            Assert.Equal("Residencial", phoneResponseDto.PhoneType);
             Assert.Equal("123456789", phoneResponseDto.PhoneNumber);
         }
 
@@ -266,13 +266,13 @@ namespace FiapTechChallenge.Tests
                     Email = "john.doe@example.com",
                     Phones = new[]
                     {
-                        new Phone { PhoneNumber = "123456789", DDD = new DDD { DDDNumber = "DDD1" }, PhoneType = new PhoneType { Description = "Home" } }
+                        new Phone { PhoneNumber = "123456789", DDD = new DDD { DDDNumber = 11 }, PhoneType = new PhoneType { Description = "Residencial" } }
                     }
                 }
             };
 
             // Act
-            var result = await _controller.GetContactsByDDD("DDD1");
+            var result = await _controller.GetContactsByDDD(11);
 
             // Assert
             var okObjectResult = Assert.IsType<OkObjectResult>(result);
@@ -286,8 +286,8 @@ namespace FiapTechChallenge.Tests
             Assert.Equal("john.doe@example.com", personResponseDto.Email);
             Assert.Single(personResponseDto.Phones);
             var phoneResponseDto = personResponseDto.Phones.First();
-            Assert.Equal("Home", phoneResponseDto.PhoneType);
-            Assert.Equal("DDD1", phoneResponseDto.DDD);
+            Assert.Equal("Residencial", phoneResponseDto.PhoneType);
+            Assert.Equal(11, phoneResponseDto.DDD);
             Assert.Equal("123456789", phoneResponseDto.PhoneNumber);
         }
 
@@ -299,7 +299,7 @@ namespace FiapTechChallenge.Tests
             //var controller = new ContactsController(unitOfWorkMock.Object);
 
             // Act
-            var result = await _controller.GetContactsByDDD("DDD1");
+            var result = await _controller.GetContactsByDDD(11);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -324,14 +324,14 @@ namespace FiapTechChallenge.Tests
                 Birthday = new DateTime(1990, 5, 15),
                 CPF = "123.456.789-00",
                 Email = "updated.email@example.com",
-                Phones = new List<PhoneDto>
+                Phones = new List<PhoneRequestByDDDDto>
                 {
-                    new PhoneDto { PhoneNumber = "987654321", DDDNumber = "DDD2", PhoneType = "Mobile" }
+                    new PhoneRequestByDDDDto { PhoneNumber = "987654321", DDDNumber = 21, PhoneType = "Celular" }
                 }
             };
 
-            var ddds = new List<DDD> { new DDD { Id = 1, DDDNumber = "DDD1" }, new DDD { Id = 2, DDDNumber = "DDD2" } };
-            var phoneTypes = new List<PhoneType> { new PhoneType { Id = 1, Description = "Home" }, new PhoneType { Id = 2, Description = "Mobile" } };
+            var ddds = new List<DDD> { new DDD { Id = 1, DDDNumber = 11 }, new DDD { Id = 2, DDDNumber = 21 } };
+            var phoneTypes = new List<PhoneType> { new PhoneType { Id = 1, Description = "Residencial" }, new PhoneType { Id = 2, Description = "Celular" } };
             var originalPerson = new Person
             {
                 Id = id,
@@ -358,8 +358,8 @@ namespace FiapTechChallenge.Tests
             Assert.Equal("updated.email@example.com", response.Email);
             Assert.Single(response.Phones);
             var phoneResponseDto = response.Phones.First();
-            Assert.Equal("Mobile", phoneResponseDto.PhoneType);
-            Assert.Equal("DDD2", phoneResponseDto.DDD);
+            Assert.Equal("Celular", phoneResponseDto.PhoneType);
+            Assert.Equal(21, phoneResponseDto.DDD);
             Assert.Equal("987654321", phoneResponseDto.PhoneNumber);
         }
 
@@ -369,7 +369,18 @@ namespace FiapTechChallenge.Tests
             // Arrange
 
             var id = 1;
-            var personDto = new PersonRequestByDDDDto(); // Invalid data
+            var personDto = new PersonRequestByDDDDto
+            {
+                Name = "John Doe",
+                Birthday = new DateTime(1990, 5, 15),
+                CPF = "123.456.789-00",
+                Email = "john.doe@example.com",
+                Phones = new List<PhoneRequestByDDDDto>
+                {
+                    new PhoneRequestByDDDDto { PhoneNumber = "123456789", DDDNumber = 11, PhoneType = "Residencial" },
+                    new PhoneRequestByDDDDto { PhoneNumber = "987654321", DDDNumber = 12, PhoneType = "Celular" }
+                }
+            };
 
             // Act
             var result = await _controller.UpdateContactV1(id, personDto);
@@ -385,15 +396,17 @@ namespace FiapTechChallenge.Tests
 
             var id = 1;
 
+            var ddds = new List<DDD> { new DDD { Id = 1, DDDNumber = 11 }, new DDD { Id = 2, DDDNumber = 21 } };
+            var phoneTypes = new List<PhoneType> { new PhoneType { Id = 1, Description = "Residencial" }, new PhoneType { Id = 2, Description = "Celular" } };
             var personDto = new PersonRequestByIdDto
             {
                 Name = "Updated Name",
                 Birthday = new DateTime(1990, 5, 15),
                 CPF = "123.456.789-00",
                 Email = "updated.email@example.com",
-                Phones = new List<PhoneDto>
+                Phones = new List<PhoneRequestByIdDto>
                 {
-                    new PhoneDto { PhoneNumber = "987654321", DDDId = 1, PhoneTypeId = 1 }
+                     new PhoneRequestByIdDto { PhoneNumber = "123456789", PhoneTypeId = 1, DDDId = 1 }
                 }
             };
 
@@ -424,8 +437,8 @@ namespace FiapTechChallenge.Tests
             Assert.Single(response.Phones);
             var phoneResponseDto = response.Phones.First();
             Assert.Equal("123456789", phoneResponseDto.PhoneNumber);
-            Assert.Equal("DDD1", phoneResponseDto.DDD);
-            Assert.Equal("Home", phoneResponseDto.PhoneType);
+            Assert.Equal(12, phoneResponseDto.DDD);
+            Assert.Equal("Residencial", phoneResponseDto.PhoneType);
         }
 
         [Fact]
@@ -436,7 +449,17 @@ namespace FiapTechChallenge.Tests
             //var controller = new ContactsController(unitOfWorkMock.Object);
 
             var id = 1;
-            var personDto = new PersonRequestByIdDto(); // Invalid data
+            var personDto = new PersonRequestByIdDto
+            {
+                Name = "Updated Name",
+                Birthday = new DateTime(1990, 5, 15),
+                CPF = "123.456.789-00",
+                Email = "updated.email@example.com",
+                Phones = new List<PhoneRequestByIdDto>
+                {
+                     new PhoneRequestByIdDto { PhoneNumber = "123456789", PhoneTypeId = 1, DDDId = 1 }
+                }
+            };
 
             // Act
             var result = await _controller.UpdateContactV2(id, personDto);
