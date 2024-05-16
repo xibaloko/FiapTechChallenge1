@@ -1,69 +1,70 @@
-﻿using FiapTechChallenge.API.Controllers;
+﻿using System.Linq.Expressions;
 using FiapTechChallenge.AppService.Interfaces;
+using FiapTechChallenge.AppService.Services;
 using FiapTechChallenge.Domain.DTOs.RequestsDto;
 using FiapTechChallenge.Domain.DTOs.ResponsesDto;
 using FiapTechChallenge.Domain.Entities;
-using FiapTechChallenge.Infra.Data;
 using FiapTechChallenge.Infra.Interfaces;
-using FiapTechChallenge.Infra.Repositories;
+using FiapTechChallenge.Tests.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace FiapTechChallenge.Tests
 {
     public class RegisterControllerTests
     {
-        private RegisterController _controller;
-        private Mock<IUnitOfWork> _unitOfWorkMock;
-        private Mock<IPersonService> _personService;
-        
-        
-        //private IUnitOfWork _unitOfWorkMock;
-        private AppDbContext _context;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IPersonRepository> _personRepositoryMock;
+        private readonly IPersonService _personService;
 
         public RegisterControllerTests()
         {
-            var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer(connectionString)
-            .Options;
-
-            _context = new AppDbContext(options);
-            _personService = new Mock<IPersonService>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            //_unitOfWorkMock = new UnitOfWork(_context);
-            _controller = new RegisterController(_unitOfWorkMock.Object, _personService.Object);
+            _personRepositoryMock = new Mock<IPersonRepository>();
+
+            // Configurando o UnitOfWork para retornar o mock do PersonRepository
+            _unitOfWorkMock.Setup(uow => uow.Person).Returns(_personRepositoryMock.Object);
+
+            _personService = new PersonService(_unitOfWorkMock.Object);
         }
 
         [Fact]
-        public async Task CreateContactV2_ValidData_ShouldReturnCreatedAtActionResult()
+        public async Task GetAllContactsAsync_ShouldReturnAllContacts()
         {
-            var personRequestDto = new PersonRequestByIdDto
-            {
-                Name = "John Doe",
-                Birthday = new DateTime(1990, 5, 15),
-                CPF = "123.456.789-00",
-                Email = "john.doe@example.com",
-                Phones = new List<PhoneRequestByIdDto>
-            {
-                 new PhoneRequestByIdDto { PhoneNumber = "123456789", PhoneTypeId = 1, DDDId = 1 },
-                 new PhoneRequestByIdDto { PhoneNumber = "987654321", PhoneTypeId = 2, DDDId = 2 }
-                }
-            };
+            // Arrange
+            var contacts = TestDataFactory.GeneratePersons(1);
 
-            var result = await _controller.CreateContactV2(personRequestDto);
+            _personRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    It.IsAny<Func<IQueryable<Person>, IOrderedQueryable<Person>>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()
+                ))
+                .ReturnsAsync(contacts);
+
+            // Act
+            var result = await _personService.GetAllContactsAsync()!;
 
             // Assert
-            var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
-            Assert.Null(createdAtActionResult.Value); // Adjust based on actual return value of your action
+            Assert.NotNull(result);
+            Assert.Equal(contacts.Count, result.Count);
+
+            var firstContact = result.First();
+            var firstGeneratedContact = contacts.First();
+
+            Assert.Equal(firstGeneratedContact.Id, firstContact.Id);
+            Assert.Equal(firstGeneratedContact.Name, firstContact.Name);
+            Assert.Equal(firstGeneratedContact.Birthday, firstContact.Birthday);
+            Assert.Equal(firstGeneratedContact.CPF, firstContact.CPF);
+            Assert.Equal(firstGeneratedContact.Email, firstContact.Email);
+
+            var firstPhone = firstContact.Phones.First();
+            var firstGeneratedPhone = firstGeneratedContact.Phones.First();
+
+            Assert.Equal(firstGeneratedPhone.PhoneNumber, firstPhone.PhoneNumber);
+            Assert.Equal(firstGeneratedPhone.PhoneType.Description, firstPhone.PhoneType);
+            Assert.Equal(firstGeneratedPhone.DDD.DDDNumber, firstPhone.DDD);
         }
 
         [Fact]
