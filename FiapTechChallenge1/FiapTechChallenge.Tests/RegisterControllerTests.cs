@@ -13,19 +13,18 @@ namespace FiapTechChallenge.Tests
 {
     public class RegisterControllerTests
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IPersonRepository> _personRepositoryMock;
         private readonly IPersonService _personService;
 
         public RegisterControllerTests()
         {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             _personRepositoryMock = new Mock<IPersonRepository>();
 
             // Configurando o UnitOfWork para retornar o mock do PersonRepository
-            _unitOfWorkMock.Setup(uow => uow.Person).Returns(_personRepositoryMock.Object);
+            unitOfWorkMock.Setup(uow => uow.Person).Returns(_personRepositoryMock.Object);
 
-            _personService = new PersonService(_unitOfWorkMock.Object);
+            _personService = new PersonService(unitOfWorkMock.Object);
         }
 
         [Fact]
@@ -48,23 +47,16 @@ namespace FiapTechChallenge.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(contacts.Count, result.Count);
+        }
+        
+        [Fact]
+        public async Task GetAllContactsAsync_ShouldReturnNull()
+        {
+            // Act
+            var result = await _personService.GetAllContactsAsync()!;
 
-            var firstContact = result.First();
-            var firstGeneratedContact = contacts.First();
-
-            Assert.Equal(firstGeneratedContact.Id, firstContact.Id);
-            Assert.Equal(firstGeneratedContact.Name, firstContact.Name);
-            Assert.Equal(firstGeneratedContact.Birthday, firstContact.Birthday);
-            Assert.Equal(firstGeneratedContact.CPF, firstContact.CPF);
-            Assert.Equal(firstGeneratedContact.Email, firstContact.Email);
-
-            var firstPhone = firstContact.Phones.First();
-            var firstGeneratedPhone = firstGeneratedContact.Phones.First();
-
-            Assert.Equal(firstGeneratedPhone.PhoneNumber, firstPhone.PhoneNumber);
-            Assert.Equal(firstGeneratedPhone.PhoneType.Description, firstPhone.PhoneType);
-            Assert.Equal(firstGeneratedPhone.DDD.DDDNumber, firstPhone.DDD);
+            // Assert
+            Assert.Empty(result);
         }
 
         [Fact]

@@ -5,5 +5,6 @@ namespace FiapTechChallenge.AppService.Interfaces
     public interface IPersonService
     {
         Task<ICollection<PersonResponseDto>>? GetAllContactsAsync();
+        Task<ICollection<PersonResponseDto>?> GetContactsByRegion(int regionId);
     }
 }
