@@ -20,7 +20,7 @@ namespace FiapTechChallenge.Tests
         private Mock<IPersonService> _personService;
         
         
-        private IUnitOfWork _unitOfWorkMock;
+        //private IUnitOfWork _unitOfWorkMock;
         private AppDbContext _context;
 
         public RegisterControllerTests()
@@ -38,7 +38,8 @@ namespace FiapTechChallenge.Tests
 
             _context = new AppDbContext(options);
             _personService = new Mock<IPersonService>();
-            _unitOfWorkMock = new UnitOfWork(_context);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            //_unitOfWorkMock = new UnitOfWork(_context);
             _controller = new RegisterController(_unitOfWorkMock.Object, _personService.Object);
         }
 
