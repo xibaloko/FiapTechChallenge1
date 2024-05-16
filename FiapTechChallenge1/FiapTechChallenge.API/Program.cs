@@ -1,3 +1,5 @@
+using FiapTechChallenge.AppService.Interfaces;
+using FiapTechChallenge.AppService.Services;
 using FiapTechChallenge.Infra.Data;
 using FiapTechChallenge.Infra.DbInitializer;
 using FiapTechChallenge.Infra.Interfaces;
@@ -20,6 +22,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
+builder.Services.AddScoped<IPersonService, PersonService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
