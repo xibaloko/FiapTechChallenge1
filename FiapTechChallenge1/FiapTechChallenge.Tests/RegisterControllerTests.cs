@@ -1,4 +1,5 @@
 ﻿using FiapTechChallenge.API.Controllers;
+using FiapTechChallenge.AppService.Interfaces;
 using FiapTechChallenge.Domain.DTOs.RequestsDto;
 using FiapTechChallenge.Domain.DTOs.ResponsesDto;
 using FiapTechChallenge.Domain.Entities;
@@ -15,7 +16,11 @@ namespace FiapTechChallenge.Tests
     public class RegisterControllerTests
     {
         private RegisterController _controller;
-        private IUnitOfWork _unitOfWorkMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
+        private Mock<IPersonService> _personService;
+        
+        
+        //private IUnitOfWork _unitOfWorkMock;
         private AppDbContext _context;
 
         public RegisterControllerTests()
@@ -32,8 +37,10 @@ namespace FiapTechChallenge.Tests
             .Options;
 
             _context = new AppDbContext(options);
-            _unitOfWorkMock = new UnitOfWork(_context);
-            _controller = new RegisterController(_unitOfWorkMock);
+            _personService = new Mock<IPersonService>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            //_unitOfWorkMock = new UnitOfWork(_context);
+            _controller = new RegisterController(_unitOfWorkMock.Object, _personService.Object);
         }
 
         [Fact]
