@@ -43,28 +43,11 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("contact-by-id/{id}")]
         public async Task<IActionResult> GetContactById(int id)
         {
-            var contact = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
-
+            var contact = await _contactsServices.GetContactById(id);
             if (contact != null)
             {
-                var response = new PersonResponseDto()
-                {
-                    Id = contact.Id,
-                    Name = contact.Name,
-                    Birthday = contact.Birthday,
-                    CPF = contact.CPF,
-                    Email = contact.Email,
-                    Phones = contact.Phones.Select(x => new PhoneResponseDto()
-                    {
-                        DDD = x.DDD.DDDNumber,
-                        PhoneNumber = x.PhoneNumber,
-                        PhoneType = x.PhoneType.Description,
-                    }).ToList()
-                };
-
-                return Ok(response);
+                return Ok(contact);
             }
-
             return NotFound();
         }
 
@@ -76,28 +59,11 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("contacts-by-region-id/{id}")]
         public async Task<IActionResult> GetContactsByRegion(int id)
         {
-            var contacts = await _unitOfWork.Person.GetAllAsync(x => x.Phones.Any(y => y.DDD.State.RegionId == id), includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
-
+            var contacts = await _contactsServices.GetContactsByRegion(id);
             if (contacts != null)
             {
-                var response = contacts.Select(x => new PersonResponseDto()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Birthday = x.Birthday,
-                    CPF = x.CPF,
-                    Email = x.Email,
-                    Phones = x.Phones.Select(s => new PhoneResponseDto()
-                    {
-                        PhoneType = s.PhoneType.Description,
-                        DDD = s.DDD.DDDNumber,
-                        PhoneNumber = s.PhoneNumber
-                    }).ToList()
-                }).ToList();
-
-                return Ok(response);
+                return Ok(contacts);
             }
-
             return NotFound();
         }
 
@@ -109,28 +75,11 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("contacts-by-ddd/{ddd}")]
         public async Task<IActionResult> GetContactsByDDD(int ddd)
         {
-            var contacts = await _unitOfWork.Person.GetAllAsync(x => x.Phones.Any(y => y.DDD.DDDNumber == ddd), includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
-
+            var contacts = await _contactsServices.GetContactsByDDD(ddd);
             if (contacts != null)
             {
-                var response = contacts.Select(x => new PersonResponseDto()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Birthday = x.Birthday,
-                    CPF = x.CPF,
-                    Email = x.Email,
-                    Phones = x.Phones.Select(s => new PhoneResponseDto()
-                    {
-                        PhoneType = s.PhoneType.Description,
-                        DDD = s.DDD.DDDNumber,
-                        PhoneNumber = s.PhoneNumber
-                    }).ToList()
-                }).ToList();
-
-                return Ok(response);
+                return Ok(contacts);
             }
-
             return NotFound();
         }
 
@@ -146,40 +95,15 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var ddds = await _unitOfWork.DDD.GetAllAsync();
-
-            foreach (var item in personDto.Phones)
+            (bool status, string msg, int personID) = await _contactsServices.CreateContactV1(personDto);
+            if (status)
             {
-                if (!ddds.Any(x => x.DDDNumber == item.DDDNumber))
-                {
-                    ModelState.AddModelError("DDD Number", $"Invalid DDD Number: '{item.DDDNumber}'");
-                    return BadRequest(ModelState);
-                }
+                return CreatedAtAction(nameof(GetContactById), new { id = personID }, null);
             }
-
-            var phoneTypes = await _unitOfWork.PhoneType.GetAllAsync();
-
-            var person = new Person()
+            else
             {
-                Name = personDto.Name,
-                Birthday = personDto.Birthday,
-                CPF = personDto.CPF,
-                Email = personDto.Email,
-                Created = DateTime.Now,
-                Modified = DateTime.Now,
-                Phones = personDto.Phones.Select(x => new Phone()
-                {
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneTypeId = phoneTypes.FirstOrDefault(p => p.Description.ToUpper() == x.PhoneType.ToUpper()).Id,
-                    DDDId = ddds.FirstOrDefault(d => d.DDDNumber == x.DDDNumber).Id,
-                }).ToList()
-            };
-
-            await _unitOfWork.Person.AddAsync(person);
-            _unitOfWork.Save();
-
-            return CreatedAtAction(nameof(GetContactById), new { id = person.Id }, null);
+                return BadRequest(msg);
+            }
         }
 
         /// <summary>
@@ -194,27 +118,12 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var person = new Person()
+            (bool status, string msg, int personID) = await _contactsServices.CreateContactV2(personDto);
+            if (status)
             {
-                Name = personDto.Name,
-                Birthday = personDto.Birthday,
-                CPF = personDto.CPF,
-                Email = personDto.Email,
-                Created = DateTime.Now,
-                Modified = DateTime.Now,
-                Phones = personDto.Phones.Select(x => new Phone()
-                {
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneTypeId = x.PhoneTypeId,
-                    DDDId = x.DDDId,
-                }).ToList()
-            };
-
-            await _unitOfWork.Person.AddAsync(person);
-            _unitOfWork.Save();
-
-            return CreatedAtAction(nameof(GetContactById), new { id = person.Id }, null);
+                return CreatedAtAction(nameof(GetContactById), new { id = personID }, null);
+            }
+            return BadRequest(msg);
         }
 
         /// <summary>
@@ -229,59 +138,12 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var ddds = await _unitOfWork.DDD.GetAllAsync();
-
-            foreach (var item in personDto.Phones)
+            (bool status, string msg, PersonResponseDto? person) = await _contactsServices.UpdateContactV1(id, personDto);
+            if (status)
             {
-                if (!ddds.Any(x => x.DDDNumber == item.DDDNumber))
-                {
-                    ModelState.AddModelError("DDD Number", $"Invalid DDD Number: '{item.DDDNumber}'");
-                    return BadRequest(ModelState);
-                }
+                return Ok(person);
             }
-
-            var phoneTypes = await _unitOfWork.PhoneType.GetAllAsync();
-
-            var person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
-
-            person.Name = personDto.Name;
-            person.Birthday = personDto.Birthday;
-            person.CPF = personDto.CPF;
-            person.Email = personDto.Email;
-            person.Modified = DateTime.Now;
-
-            if (personDto.Phones.Count > 0)
-            {
-                person.Phones.Clear();
-
-                person.Phones = personDto.Phones.Select(x => new Phone()
-                {
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneTypeId = phoneTypes.FirstOrDefault(p => p.Description == x.PhoneType).Id,
-                    DDDId = ddds.FirstOrDefault(d => d.DDDNumber == x.DDDNumber).Id,
-                }).ToList();
-            }
-
-            _unitOfWork.Person.Update(person);
-            _unitOfWork.Save();
-
-            var response = new PersonResponseDto()
-            {
-                Id = person.Id,
-                Name = person.Name,
-                Birthday = person.Birthday,
-                CPF = person.CPF,
-                Email = person.Email,
-                Phones = person.Phones.Select(x => new PhoneResponseDto()
-                {
-                    DDD = x.DDD.DDDNumber,
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneType = phoneTypes.FirstOrDefault(p => p.Id == x.PhoneTypeId).Description,
-                }).ToList()
-            };
-
-            return Ok(response);
+            return BadRequest(msg);
         }
 
         /// <summary>
@@ -296,48 +158,12 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
-
-            person.Name = personDto.Name;
-            person.Birthday = personDto.Birthday;
-            person.CPF = personDto.CPF;
-            person.Email = personDto.Email;
-            person.Modified = DateTime.Now;
-
-            if (personDto.Phones.Count > 0)
+            (bool status, string msg, PersonResponseDto? person) = await _contactsServices.UpdateContactV2(id, personDto);
+            if (status)
             {
-                person.Phones.Clear();
-
-                person.Phones = personDto.Phones.Select(x => new Phone()
-                {
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneTypeId = x.PhoneTypeId,
-                    DDDId = x.DDDId,
-                }).ToList();
+                return Ok(person);
             }
-
-            _unitOfWork.Person.Update(person);
-            _unitOfWork.Save();
-
-            var phoneTypes = await _unitOfWork.PhoneType.GetAllAsync();
-
-            var response = new PersonResponseDto()
-            {
-                Id = person.Id,
-                Name = person.Name,
-                Birthday = person.Birthday,
-                CPF = person.CPF,
-                Email = person.Email,
-                Phones = person.Phones.Select(x => new PhoneResponseDto()
-                {
-                    DDD = x.DDD.DDDNumber,
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneType = phoneTypes.FirstOrDefault(p => p.Id == x.PhoneTypeId).Description,
-                }).ToList()
-            };
-
-            return Ok(response);
+            return BadRequest(msg);
         }
 
         /// <summary>
@@ -348,23 +174,16 @@ namespace FiapTechChallenge.API.Controllers
         [HttpDelete("delete-contact/{id}")]
         public async Task<IActionResult> DeleteContact(int id)
         {
-            var person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (person == null)
+            (bool status, string msg) = await _contactsServices.DeleteContact(id);
+            if (status)
             {
-                return NotFound(new
+                return Ok(new
                 {
-                    Message = "This person was not found."
+                    Message = "This person was successfully deleted."
                 });
+
             }
-
-            _unitOfWork.Person.Remove(person);
-            var ret = _unitOfWork.Person.SaveCount();
-
-            return Ok(new
-            {
-                Message = "This person was successfully deleted."
-            });
+            return BadRequest(msg);
         }
     }
 }

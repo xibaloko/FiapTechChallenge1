@@ -277,7 +277,6 @@ namespace FiapTechChallenge.AppService.Services
             return (true, string.Empty, response);
         }
 
-
         public async Task<(bool, string)> DeleteContact(int id)
         {
             var person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id);
