@@ -24,6 +24,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<ISuporteDataService, SuporteDataService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

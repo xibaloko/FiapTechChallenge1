@@ -1,4 +1,5 @@
-﻿using FiapTechChallenge.Domain.DTOs.ResponsesDto;
+﻿using FiapTechChallenge.AppService.Interfaces;
+using FiapTechChallenge.Domain.DTOs.ResponsesDto;
 using FiapTechChallenge.Infra.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,10 @@ namespace FiapTechChallenge.API.Controllers
     [ApiController]
     public class SupportDataController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public SupportDataController(IUnitOfWork unitOfWork)
+        public ISuporteDataService _suporteService { get; set; }
+        public SupportDataController(ISuporteDataService suporteDataService)
         {
-            _unitOfWork = unitOfWork;
+            _suporteService = suporteDataService;
         }
 
         /// <summary>
@@ -23,20 +23,7 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("all-regions")]
         public async Task<IActionResult> GetAllRegions()
         {
-            var regions = await _unitOfWork.Region.GetAllAsync();
-
-            if (regions != null)
-            {
-                var response = regions.Select(x => new RegionResponseDto()
-                {
-                    RegionId = x.Id,
-                    RegionName = x.RegionName
-                });
-
-                return Ok(response);
-            }
-
-            return NoContent();
+            return Ok(await _suporteService.GetAllRegions());
         }
 
         /// <summary>
@@ -47,20 +34,7 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("all-ddds")]
         public async Task<IActionResult> GetAllDDDs()
         {
-            var ddds = await _unitOfWork.DDD.GetAllAsync();
-
-            if (ddds != null)
-            {
-                var response = ddds.Select(x => new DDDResponseDto()
-                {
-                    DDDId = x.Id,
-                    DDDNumber = x.DDDNumber
-                });
-
-                return Ok(response);
-            }
-
-            return NoContent();
+            return Ok(await _suporteService.GetAllDDDs());
         }
 
         /// <summary>
@@ -71,20 +45,7 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("all-states")]
         public async Task<IActionResult> GetAllStates()
         {
-            var states = await _unitOfWork.State.GetAllAsync();
-
-            if (states != null)
-            {
-                var response = states.Select(x => new StateResponseDto()
-                {
-                    StateId = x.Id,
-                    StateName = x.StateName
-                });
-
-                return Ok(response);
-            }
-
-            return NoContent();
+            return Ok(await _suporteService.GetAllStates());
         }
 
         /// <summary>
@@ -95,20 +56,7 @@ namespace FiapTechChallenge.API.Controllers
         [HttpGet("all-phone-types")]
         public async Task<IActionResult> GetAllPhoneTypes()
         {
-            var phoneTypes = await _unitOfWork.PhoneType.GetAllAsync();
-
-            if (phoneTypes != null)
-            {
-                var response = phoneTypes.Select(x => new PhoneTypeDto()
-                {
-                    PhoneTypeId = x.Id,
-                    PhoneType = x.Description
-                });
-
-                return Ok(response);
-            }
-
-            return NoContent();
+            return Ok(await _suporteService.GetAllPhoneTypes());
         }
     }
 }

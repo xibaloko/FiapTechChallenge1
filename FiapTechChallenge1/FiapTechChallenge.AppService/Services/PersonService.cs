@@ -120,7 +120,7 @@ namespace FiapTechChallenge.AppService.Services
             return null;
         }
 
-        public async Task<(bool, string, int)> CreateContactV1(PersonRequestByDDDDto personDto)
+        public async Task<(bool, string, int)> CreateContact(PersonRequestByDDDDto personDto)
         {
             var ddds = await _unitOfWork.DDD.GetAllAsync();
             foreach (var item in personDto.Phones)
@@ -153,31 +153,7 @@ namespace FiapTechChallenge.AppService.Services
             return (true, string.Empty, person.Id);
         }
 
-        public async Task<(bool, string, int)> CreateContactV2(PersonRequestByIdDto personDto)
-        {
-            var person = new Person()
-            {
-                Name = personDto.Name,
-                Birthday = personDto.Birthday,
-                CPF = personDto.CPF,
-                Email = personDto.Email,
-                Created = DateTime.Now,
-                Modified = DateTime.Now,
-                Phones = personDto.Phones.Select(x => new Phone()
-                {
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneTypeId = x.PhoneTypeId,
-                    DDDId = x.DDDId,
-                }).ToList()
-            };
-
-            await _unitOfWork.Person.AddAsync(person);
-            _unitOfWork.Save();
-
-            return (true, string.Empty, person.Id);
-        }
-
-        public async Task<(bool, string, PersonResponseDto?)> UpdateContactV1(int id, PersonRequestByDDDDto personDto)
+        public async Task<(bool, string, PersonResponseDto?)> UpdateContact(int id, PersonRequestByDDDDto personDto)
         {
             var ddds = await _unitOfWork.DDD.GetAllAsync();
 
@@ -213,51 +189,7 @@ namespace FiapTechChallenge.AppService.Services
 
             _unitOfWork.Person.Update(person);
             _unitOfWork.Save();
-
-            var response = new PersonResponseDto()
-            {
-                Id = person.Id,
-                Name = person.Name,
-                Birthday = person.Birthday,
-                CPF = person.CPF,
-                Email = person.Email,
-                Phones = person.Phones.Select(x => new PhoneResponseDto()
-                {
-                    DDD = x.DDD.DDDNumber,
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneType = phoneTypes.FirstOrDefault(p => p.Id == x.PhoneTypeId).Description,
-                }).ToList()
-            };
-
-            return (true, string.Empty, response);
-        }
-
-        public async Task<(bool, string, PersonResponseDto)> UpdateContactV2(int id, PersonRequestByIdDto personDto)
-        {
-            var person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
-
-            person.Name = personDto.Name;
-            person.Birthday = personDto.Birthday;
-            person.CPF = personDto.CPF;
-            person.Email = personDto.Email;
-            person.Modified = DateTime.Now;
-
-            if (personDto.Phones.Count > 0)
-            {
-                person.Phones.Clear();
-
-                person.Phones = personDto.Phones.Select(x => new Phone()
-                {
-                    PhoneNumber = x.PhoneNumber,
-                    PhoneTypeId = x.PhoneTypeId,
-                    DDDId = x.DDDId,
-                }).ToList();
-            }
-
-            _unitOfWork.Person.Update(person);
-            _unitOfWork.Save();
-
-            var phoneTypes = await _unitOfWork.PhoneType.GetAllAsync();
+            person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
 
             var response = new PersonResponseDto()
             {

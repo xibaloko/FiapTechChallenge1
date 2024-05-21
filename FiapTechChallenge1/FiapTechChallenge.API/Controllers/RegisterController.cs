@@ -88,14 +88,14 @@ namespace FiapTechChallenge.API.Controllers
         /// </summary>
         /// <response code="201">returns the route to access the created contact</response>
         /// <response code="400">there are missing fields or fields with errors</response>
-        [HttpPost("create-contact-v1")]
-        public async Task<IActionResult> CreateContactV1([FromBody] PersonRequestByDDDDto personDto)
+        [HttpPost("create-contact")]
+        public async Task<IActionResult> CreateContact([FromBody] PersonRequestByDDDDto personDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            (bool status, string msg, int personID) = await _contactsServices.CreateContactV1(personDto);
+            (bool status, string msg, int personID) = await _contactsServices.CreateContact(personDto);
             if (status)
             {
                 return CreatedAtAction(nameof(GetContactById), new { id = personID }, null);
@@ -105,67 +105,27 @@ namespace FiapTechChallenge.API.Controllers
                 return BadRequest(msg);
             }
         }
-
-        /// <summary>
-        /// fill the required fields to create a new contact, remember to inform the DDDId and the PhoneTypeId 
-        /// </summary>
-        /// <response code="201">returns the route to access the created contact</response>
-        /// <response code="400">there are missing fields or fields with errors</response>
-        [HttpPost("create-contact-v2")]
-        public async Task<IActionResult> CreateContactV2([FromBody] PersonRequestByIdDto personDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            (bool status, string msg, int personID) = await _contactsServices.CreateContactV2(personDto);
-            if (status)
-            {
-                return CreatedAtAction(nameof(GetContactById), new { id = personID }, null);
-            }
-            return BadRequest(msg);
-        }
-
+        
         /// <summary>
         /// inform an id and fill the fields you want to modify to update a contact, remember to inform 'DDDNumber' and the exact description of the 'PhoneType'
         /// </summary>
         /// <response code="200">returns the modified contact</response>
         /// <response code="400">there are missing fields or fields with errors</response>
-        [HttpPut("update-contact-v1/{id}")]
-        public async Task<IActionResult> UpdateContactV1(int id, [FromBody] PersonRequestByDDDDto personDto)
+        [HttpPut("update-contact/{id}")]
+        public async Task<IActionResult> UpdateContact(int id, [FromBody] PersonRequestByDDDDto personDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            (bool status, string msg, PersonResponseDto? person) = await _contactsServices.UpdateContactV1(id, personDto);
+            (bool status, string msg, PersonResponseDto? person) = await _contactsServices.UpdateContact(id, personDto);
             if (status)
             {
                 return Ok(person);
             }
             return BadRequest(msg);
         }
-
-        /// <summary>
-        /// inform an id and fill the fields you want to modify to update a contact, remember to inform the DDDId and the PhoneTypeId 
-        /// </summary>
-        /// <response code="200">returns the modified contact</response>
-        /// <response code="400">there are missing fields or fields with errors</response>
-        [HttpPut("update-contact-v2/{id}")]
-        public async Task<IActionResult> UpdateContactV2(int id, [FromBody] PersonRequestByIdDto personDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            (bool status, string msg, PersonResponseDto? person) = await _contactsServices.UpdateContactV2(id, personDto);
-            if (status)
-            {
-                return Ok(person);
-            }
-            return BadRequest(msg);
-        }
-
+        
         /// <summary>
         /// inform an id to delete a contact
         /// </summary>
