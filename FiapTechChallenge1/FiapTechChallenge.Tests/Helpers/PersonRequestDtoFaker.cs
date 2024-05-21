@@ -1,23 +1,21 @@
 ﻿using Bogus;
 using Bogus.Extensions.Brazil;
 using FiapTechChallenge.Domain.DTOs.RequestsDto;
-using System;
-using System.Collections.Generic;
 
 namespace FiapTechChallenge.Tests.Helpers
 {
     public static class PersonRequestDtoFaker
     {
-        public static PersonRequestByIdDto GeneratePersonRequest()
+        public static PersonRequestByDDDDto GeneratePersonRequest()
         {
             var faker = new Faker("pt_BR");
 
-            var phoneFaker = new Faker<PhoneRequestByIdDto>()
-                .RuleFor(p => p.PhoneNumber, f => f.Phone.PhoneNumber("#########"))
-                .RuleFor(p => p.PhoneTypeId, f => f.Random.Int(1, 3))
-                .RuleFor(p => p.DDDId, f => f.Random.Int(1, 99));
+            var phoneFaker = new Faker<PhoneRequestByDDDDto>()
+                .RuleFor(p => p.PhoneNumber, f => f.Phone.PhoneNumber("##########"))
+                .RuleFor(p => p.DDDNumber, f => f.Random.Int(1, 99))
+                .RuleFor(p => p.PhoneType, f => f.PickRandom("Residencial", "Comercial", "Celular"));
 
-            var personRequestDto = new Faker<PersonRequestByIdDto>()
+            var personRequestDto = new Faker<PersonRequestByDDDDto>()
                 .RuleFor(p => p.Name, f => f.Name.FullName())
                 .RuleFor(p => p.Birthday, f => f.Date.Past(30, DateTime.Now.AddYears(-18)))
                 .RuleFor(p => p.CPF, f => f.Person.Cpf(false))
