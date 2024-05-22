@@ -169,6 +169,11 @@ namespace FiapTechChallenge.AppService.Services
 
             var person = await _unitOfWork.Person.FirstOrDefaultAsync(x => x.Id == id, includeProperties: "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType");
 
+            if (person == null)
+            {
+                return (false, $"Person with ID: {id} not found.", null);
+            }
+            
             person.Name = personDto.Name;
             person.Birthday = personDto.Birthday;
             person.CPF = personDto.CPF;

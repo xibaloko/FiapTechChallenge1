@@ -160,7 +160,7 @@ namespace FiapTechChallenge.Tests
             // Arrange
             const int invalidDddNumber = 0;
 
-            // Act & Assert
+            // Assert
             var ex = Assert.Throws<ValidationException>(() => ValidateDddNumber(invalidDddNumber));
             Assert.Equal("The field DDDNumber must be between 1 and 2147483647.", ex.Message);
         }
@@ -213,8 +213,7 @@ namespace FiapTechChallenge.Tests
             const int validDddNumber = 11;
             const string validPhoneType = "Residencial";
             var personDto = PersonRequestDtoFaker.GeneratePersonRequest();
-
-            // Ajustar os valores de DDDNumber e PhoneType para garantir que correspondem aos valores esperados
+            
             foreach (var phone in personDto.Phones)
             {
                 phone.DDDNumber = validDddNumber;
@@ -242,7 +241,7 @@ namespace FiapTechChallenge.Tests
 
             _personRepositoryMock
                 .Setup(repo => repo.AddAsync(It.IsAny<Person>()))
-                .Callback<Person>(p => p.Id = 1) // Configura o ID da pessoa ao adicionar
+                .Callback<Person>(p => p.Id = 1)
                 .Returns(Task.CompletedTask);
 
             _unitOfWorkMock
@@ -269,7 +268,7 @@ namespace FiapTechChallenge.Tests
                     It.IsAny<Expression<Func<Person, bool>>>(),
                     It.IsAny<string>(),
                     It.IsAny<bool>()))!
-                .ReturnsAsync((Person)null); // Simula que a pessoa não foi encontrada
+                .ReturnsAsync((Person)null);
 
             // Act
             var result = await _personService.DeleteContact(personId);
@@ -320,7 +319,7 @@ namespace FiapTechChallenge.Tests
                     It.IsAny<Expression<Func<Person, bool>>>(),
                     "Phones,Phones.DDD,Phones.DDD.State,Phones.DDD.State.Region",
                     true))!
-                .ReturnsAsync((Person)null!); // Simula que o contato não foi encontrado
+                .ReturnsAsync((Person)null!);
 
             // Act
             var result = await _personService.GetContactById(contactId);
@@ -384,13 +383,277 @@ namespace FiapTechChallenge.Tests
                 Assert.Equal(contactPhones[i].DDD.DDDNumber, resultPhones[i].DDD);
                 Assert.Equal(contactPhones[i].PhoneNumber, resultPhones[i].PhoneNumber);
                 Assert.Equal(contactPhones[i].PhoneType.Description, resultPhones[i].PhoneType);
-
-                // Verificar propriedades do estado e da região
+                
                 Assert.Equal(contactPhones[i].DDD.State.UF, state.UF);
                 Assert.Equal(contactPhones[i].DDD.State.StateName, state.StateName);
                 Assert.Equal(contactPhones[i].DDD.State.Region.RegionName, state.Region.RegionName);
                 Assert.Equal(contactPhones[i].DDD.State.RegionId, state.RegionId);
             }
+        }
+        
+        [Fact]
+        public async Task GetContactsByDDD_ShouldReturnContacts_WhenContactsExist()
+        {
+            // Arrange
+            const int validDdd = 11;
+            var contacts = TestDataFactory.GeneratePersons(2);
+            var ddd = new DDD { DDDNumber = validDdd };
+            
+            foreach (var contact in contacts)
+            {
+                var phoneRequest = PhoneRequestDtoFaker.GeneratePhoneRequest();
+                phoneRequest.DDDNumber = validDdd;
+                
+                contact.Phones = new List<Phone>
+                {
+                    new Phone
+                    {
+                        DDD = ddd,
+                        PhoneNumber = phoneRequest.PhoneNumber,
+                        PhoneType = new PhoneType { Description = phoneRequest.PhoneType }
+                    }
+                };
+            }
+
+            _personRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    It.IsAny<Func<IQueryable<Person>, IOrderedQueryable<Person>>>(),
+                    "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
+                    true
+                ))
+                .ReturnsAsync(contacts);
+
+            // Act
+            var result = await _personService.GetContactsByDDD(validDdd);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(contacts.Count, result.Count);
+
+            for (int i = 0; i < contacts.Count; i++)
+            {
+                var contact = contacts[i];
+                var resultContact = result.ElementAt(i);
+
+                Assert.Equal(contact.Id, resultContact.Id);
+                Assert.Equal(contact.Name, resultContact.Name);
+                Assert.Equal(contact.Birthday, resultContact.Birthday);
+                Assert.Equal(contact.CPF, resultContact.CPF);
+                Assert.Equal(contact.Email, resultContact.Email);
+                
+                var contactPhones = contact.Phones.ToList();
+                var resultPhones = resultContact.Phones.ToList();
+
+                Assert.Equal(contactPhones.Count, resultPhones.Count);
+
+                for (int j = 0; j < contactPhones.Count; j++)
+                {
+                    Assert.Equal(contactPhones[j].DDD.DDDNumber, resultPhones[j].DDD);
+                    Assert.Equal(contactPhones[j].PhoneNumber, resultPhones[j].PhoneNumber);
+                    Assert.Equal(contactPhones[j].PhoneType.Description, resultPhones[j].PhoneType);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetContactsByDDD_ShouldReturnEmpty_WhenNoContactsExist()
+        {
+            // Arrange
+            const int validDdd = 11;
+            var contacts = new List<Person>();
+
+            _personRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    It.IsAny<Func<IQueryable<Person>, IOrderedQueryable<Person>>>(),
+                    "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
+                    true
+                ))
+                .ReturnsAsync(contacts);
+
+            // Act
+            var result = await _personService.GetContactsByDDD(validDdd);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+        
+        [Fact]
+        public async Task GetContactsByRegion_ShouldReturnContacts_WhenContactsExist()
+        {
+            // Arrange
+            const int validRegionId = 1;
+            var contacts = TestDataFactory.GeneratePersons(2);
+            var region = new Region { Id = validRegionId, RegionName = "Sudeste" };
+            var state = new State { Region = region };
+
+            
+            foreach (var contact in contacts)
+            {
+                var phoneRequest = PhoneRequestDtoFaker.GeneratePhoneRequest();
+                phoneRequest.DDDNumber = 11; // Certifique-se de que o DDD é válido
+
+                contact.Phones = new List<Phone>
+                {
+                    new Phone
+                    {
+                        DDD = new DDD { DDDNumber = phoneRequest.DDDNumber, State = state },
+                        PhoneNumber = phoneRequest.PhoneNumber,
+                        PhoneType = new PhoneType { Description = phoneRequest.PhoneType }
+                    }
+                };
+            }
+
+            _personRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    It.IsAny<Func<IQueryable<Person>, IOrderedQueryable<Person>>>(),
+                    "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
+                    true
+                ))
+                .ReturnsAsync(contacts);
+
+            // Act
+            var result = await _personService.GetContactsByRegion(validRegionId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(contacts.Count, result.Count);
+
+            for (int i = 0; i < contacts.Count; i++)
+            {
+                var contact = contacts[i];
+                var resultContact = result.ElementAt(i);
+
+                Assert.Equal(contact.Id, resultContact.Id);
+                Assert.Equal(contact.Name, resultContact.Name);
+                Assert.Equal(contact.Birthday, resultContact.Birthday);
+                Assert.Equal(contact.CPF, resultContact.CPF);
+                Assert.Equal(contact.Email, resultContact.Email);
+
+                var contactPhones = contact.Phones.ToList();
+                var resultPhones = resultContact.Phones.ToList();
+
+                Assert.Equal(contactPhones.Count, resultPhones.Count);
+
+                for (int j = 0; j < contactPhones.Count; j++)
+                {
+                    Assert.Equal(contactPhones[j].DDD.DDDNumber, resultPhones[j].DDD);
+                    Assert.Equal(contactPhones[j].PhoneNumber, resultPhones[j].PhoneNumber);
+                    Assert.Equal(contactPhones[j].PhoneType.Description, resultPhones[j].PhoneType);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetContactsByRegion_ShouldReturnEmpty_WhenNoContactsExist()
+        {
+            // Arrange
+            const int validRegionId = 1;
+            var contacts = new List<Person>(); // Lista vazia para simular ausência de contatos
+
+            _personRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    It.IsAny<Func<IQueryable<Person>, IOrderedQueryable<Person>>>(),
+                    "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
+                    true
+                ))
+                .ReturnsAsync(contacts);
+
+            // Act
+            var result = await _personService.GetContactsByRegion(validRegionId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+        
+        [Fact]
+        public async Task UpdateContact_ShouldReturnFalse_WhenDDDNumberIsInvalid()
+        {
+            // Arrange
+            const int personId = 1;
+            const int invalidDddNumber = 999;
+            var personDto = PersonRequestDtoFaker.GeneratePersonRequest();
+            personDto.Phones.First().DDDNumber = invalidDddNumber;
+
+            _dddRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<DDD, bool>>>(),
+                    It.IsAny<Func<IQueryable<DDD>, IOrderedQueryable<DDD>>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(new List<DDD>());
+
+            _personRepositoryMock
+                .Setup(repo => repo.FirstOrDefaultAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
+                    true))
+                .ReturnsAsync(new Person { Id = personId });
+
+            // Act
+            var result = await _personService.UpdateContact(personId, personDto);
+
+            // Assert
+            Assert.False(result.Item1);
+            Assert.Equal($"Invalid DDD Number: '{invalidDddNumber}'", result.Item2);
+            Assert.Null(result.Item3);
+        }
+        
+        [Fact]
+        public async Task UpdateContact_ShouldReturnFalse_WhenPersonIsNotFound()
+        {
+            // Arrange
+            const int personId = 1;
+            const string validPhoneType = "Residencial";
+            const int validDddNumber = 11;
+            var personDto = PersonRequestDtoFaker.GeneratePersonRequest();
+            
+            foreach (var phone in personDto.Phones)
+            {
+                phone.DDDNumber = validDddNumber;
+                phone.PhoneType = validPhoneType;
+            }
+
+            var ddds = new List<DDD> { new DDD { Id = 1, DDDNumber = validDddNumber } };
+            var phoneTypes = new List<PhoneType> { new PhoneType { Id = 1, Description = validPhoneType } };
+
+            _dddRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<DDD, bool>>>(),
+                    It.IsAny<Func<IQueryable<DDD>, IOrderedQueryable<DDD>>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(ddds);
+
+            _phoneTypeRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<PhoneType, bool>>>(),
+                    It.IsAny<Func<IQueryable<PhoneType>, IOrderedQueryable<PhoneType>>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(phoneTypes);
+            
+            _personRepositoryMock
+                .Setup(repo => repo.FirstOrDefaultAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
+                    true))!
+                .ReturnsAsync((Person)null); // Retorne null para simular que a pessoa não foi encontrada
+
+            // Act
+            var result = await _personService.UpdateContact(personId, personDto);
+
+            // Assert
+            Assert.False(result.Item1);
+            Assert.Equal($"Person with ID: {personId} not found.", result.Item2);
+            Assert.Null(result.Item3);
         }
     }
 }
