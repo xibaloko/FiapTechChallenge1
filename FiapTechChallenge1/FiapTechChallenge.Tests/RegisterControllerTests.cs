@@ -655,5 +655,132 @@ namespace FiapTechChallenge.Tests
             Assert.Equal($"Person with ID: {personId} not found.", result.Item2);
             Assert.Null(result.Item3);
         }
+        
+        [Fact]
+        public async Task UpdateContact_ShouldReturnPersonResponseDto_WhenContactIsUpdatedSuccessfully()
+        {
+            // Arrange
+            const int personId = 1;
+            const string validPhoneType = "Residencial";
+            const int validDddNumber = 11;
+            var personDto = PersonRequestDtoFaker.GeneratePersonRequest();
+
+            foreach (var phone in personDto.Phones)
+            {
+                phone.DDDNumber = validDddNumber;
+                phone.PhoneType = validPhoneType;
+            }
+
+            var ddd = new DDD 
+            { 
+                Id = 1, 
+                DDDNumber = validDddNumber, 
+                State = new State 
+                { 
+                    Id = 1, 
+                    StateName = "São Paulo", 
+                    UF = "SP", 
+                    Region = new Region { Id = 1, RegionName = "Sudeste" } 
+                } 
+            };
+
+            var phoneType = new PhoneType { Id = 1, Description = validPhoneType };
+
+            var personPhones = personDto.Phones.Select(phone => new Phone
+            {
+                PhoneNumber = phone.PhoneNumber,
+                PhoneTypeId = phoneType.Id,
+                DDDId = ddd.Id,
+                DDD = ddd,
+                PhoneType = phoneType
+            }).ToList();
+
+            var person = new Person 
+            { 
+                Id = personId, 
+                Name = personDto.Name,
+                Birthday = personDto.Birthday,
+                CPF = personDto.CPF,
+                Email = personDto.Email,
+                Phones = personPhones
+            };
+            
+            var updatedPersonPhones = personDto.Phones.Select(phone => new Phone
+            {
+                PhoneNumber = phone.PhoneNumber,
+                PhoneTypeId = phoneType.Id,
+                DDDId = ddd.Id,
+                DDD = ddd,
+                PhoneType = phoneType
+            }).ToList();
+
+            var updatedPerson = new Person 
+            { 
+                Id = personId, 
+                Name = personDto.Name,
+                Birthday = personDto.Birthday,
+                CPF = personDto.CPF,
+                Email = personDto.Email,
+                Phones = updatedPersonPhones
+            };
+
+            // Mocking the repositories
+            _dddRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<DDD, bool>>>(),
+                    It.IsAny<Func<IQueryable<DDD>, IOrderedQueryable<DDD>>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(new List<DDD> { ddd });
+
+            _phoneTypeRepositoryMock
+                .Setup(repo => repo.GetAllAsync(
+                    It.IsAny<Expression<Func<PhoneType, bool>>>(),
+                    It.IsAny<Func<IQueryable<PhoneType>, IOrderedQueryable<PhoneType>>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(new List<PhoneType> { phoneType });
+
+            // Configurando o mock para retornar a entidade person na primeira chamada
+            _personRepositoryMock
+                .SetupSequence(repo => repo.FirstOrDefaultAsync(
+                    It.IsAny<Expression<Func<Person, bool>>>(),
+                    "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
+                    true))
+                .ReturnsAsync(person) // Primeira chamada
+                .ReturnsAsync(updatedPerson); // Segunda chamada
+
+            _personRepositoryMock
+                .Setup(repo => repo.Update(It.IsAny<Person>()))
+                .Verifiable();
+
+            _unitOfWorkMock
+                .Setup(uow => uow.Save())
+                .Verifiable();
+
+            // Act
+            var result = await _personService.UpdateContact(personId, personDto);
+
+            // Assert
+            Assert.True(result.Item1);
+            Assert.Equal(string.Empty, result.Item2);
+            Assert.NotNull(result.Item3);
+            Assert.Equal(personDto.Name, result.Item3?.Name);
+            Assert.Equal(personDto.Email, result.Item3?.Email);
+            Assert.Equal(personDto.CPF, result.Item3?.CPF);
+            Assert.Equal(personDto.Birthday, result.Item3?.Birthday);
+            Assert.NotNull(result.Item3?.Phones);
+            Assert.Equal(personDto.Phones.Count, result.Item3?.Phones.Count);
+
+            var resultPhonesList = result.Item3?.Phones.ToList();
+            var personDtoPhonesList = personDto.Phones.ToList();
+
+            for (int i = 0; i < personDtoPhonesList.Count; i++)
+            {
+                Assert.Equal(personDtoPhonesList[i].DDDNumber, resultPhonesList[i].DDD);
+                Assert.Equal(personDtoPhonesList[i].PhoneNumber, resultPhonesList[i].PhoneNumber);
+                Assert.Equal(personDtoPhonesList[i].PhoneType, resultPhonesList[i].PhoneType);
+            }
+        }
     }
 }
