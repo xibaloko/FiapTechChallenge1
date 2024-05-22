@@ -723,8 +723,7 @@ namespace FiapTechChallenge.Tests
                 Email = personDto.Email,
                 Phones = updatedPersonPhones
             };
-
-            // Mocking the repositories
+            
             _dddRepositoryMock
                 .Setup(repo => repo.GetAllAsync(
                     It.IsAny<Expression<Func<DDD, bool>>>(),
@@ -740,15 +739,14 @@ namespace FiapTechChallenge.Tests
                     It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(new List<PhoneType> { phoneType });
-
-            // Configurando o mock para retornar a entidade person na primeira chamada
+            
             _personRepositoryMock
                 .SetupSequence(repo => repo.FirstOrDefaultAsync(
                     It.IsAny<Expression<Func<Person, bool>>>(),
                     "Phones,Phones.DDD,Phones.DDD.State,Phones.PhoneType",
                     true))
-                .ReturnsAsync(person) // Primeira chamada
-                .ReturnsAsync(updatedPerson); // Segunda chamada
+                .ReturnsAsync(person)
+                .ReturnsAsync(updatedPerson);
 
             _personRepositoryMock
                 .Setup(repo => repo.Update(It.IsAny<Person>()))
