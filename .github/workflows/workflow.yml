@@ -18,8 +18,8 @@ jobs:
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: FiapTechChallenge1.sln                         # Substitua pelo nome da sua solução, i.e. MyWpfApp.sln.
-      Test_Project_Path: FiapTechChallenge.Tests/FiapTechChallenge.Tests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
+      Solution_Name: FiapTechChallenge1/FiapTechChallenge1.sln                         # Substitua pelo nome da sua solução, i.e. MyWpfApp.sln.
+      Test_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Tests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
 
     steps:
     - name: Checkout
