@@ -20,6 +20,7 @@ jobs:
     env:
       Solution_Name: FiapTechChallenge1/FiapTechChallenge1.sln                         # Substitua pelo nome da sua solução, i.e. MyWpfApp.sln.
       Test_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Tests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
+      #Test_Integration_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Integration.Tests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
 
     steps:
     - name: Checkout
@@ -36,6 +37,10 @@ jobs:
     # Executar todos os testes unitários na solução
     - name: Executar testes unitários
       run: dotnet test ${{ env.Test_Project_Path }}
+
+    # Executar todos os testes de integração na solução
+    #- name: Executar testes de integração
+    #  run: dotnet test ${{ env.Test_Integration_Project_Path }}
 
     # Restaurar a aplicação para popular a pasta obj com RuntimeIdentifiers
     - name: Restaurar a aplicação
