@@ -13,7 +13,7 @@ jobs:
       matrix:
         configuration: [Release]
 
-    runs-on: windows-latest  # Para uma lista de tipos de runners disponíveis, consulte
+    runs-on: ubuntu-latest  # Para uma lista de tipos de runners disponíveis, consulte
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
