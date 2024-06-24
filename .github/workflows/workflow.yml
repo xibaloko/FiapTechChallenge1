@@ -36,7 +36,6 @@ jobs:
     # Executar Docker Compose
     - name: Executar Docker Compose
       run: docker-compose -f FiapTechChallenge1/docker-compose.yml up -d
-      # Substitua `path/to/your/docker-compose.yml` pelo caminho correto do seu arquivo docker-compose.yml.
 
     - name: Aguardar a inicialização do banco de dados
       run: sleep 5
