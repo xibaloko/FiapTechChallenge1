@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.API", "Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.Tests", "FiapTechChallenge.Tests\FiapTechChallenge.Tests.csproj", "{EA77385F-3984-428F-9874-9DED415B2B1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.IntegrationTests", "FiapTechChallenge.IntegrationIntegrationTests\FiapTechChallenge.IntegrationTests.csproj", "{510482F9-0709-4A3B-B631-C45346825C5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{EA77385F-3984-428F-9874-9DED415B2B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA77385F-3984-428F-9874-9DED415B2B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA77385F-3984-428F-9874-9DED415B2B1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{510482F9-0709-4A3B-B631-C45346825C5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{510482F9-0709-4A3B-B631-C45346825C5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{510482F9-0709-4A3B-B631-C45346825C5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{510482F9-0709-4A3B-B631-C45346825C5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -28,10 +28,12 @@ namespace FiapTechChallenge.API.Controllers
         public async Task<IActionResult> GetAllContacts()
         {
             ICollection<PersonResponseDto>? res = await _contactsServices.GetAllContactsAsync();
+            
             if (res.Any())
             {
                 return Ok(res);
             }
+
             return NotFound();
         }
 

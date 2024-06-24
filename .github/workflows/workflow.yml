@@ -5,11 +5,10 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-
   build:
-
     strategy:
       matrix:
         configuration: [Release]
@@ -20,13 +19,26 @@ jobs:
     env:
       Solution_Name: FiapTechChallenge1/FiapTechChallenge1.sln                         # Substitua pelo nome da sua solução, i.e. MyWpfApp.sln.
       Test_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Tests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
-      #Test_Integration_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Integration.Tests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
+      Test_Integration_Project_Path: FiapTechChallenge1/FiapTechChallenge.IntegrationTests/FiapTechChallenge.IntegrationTests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    # Configurar Docker
+    - name: Configurar Docker
+      run: |
+        Start-Service docker
+        docker info
+
+    # Executar Docker Compose
+    - name: Executar Docker Compose
+      run: docker-compose -f FiapTechChallenge1/docker-compose.yml up -d
+
+    - name: Aguardar a inicialização do banco de dados
+      run: sleep 5
 
     # Instale o workload do .NET Core
     - name: Instalar .NET Core
@@ -39,14 +51,14 @@ jobs:
       run: dotnet test ${{ env.Test_Project_Path }}
 
     # Executar todos os testes de integração na solução
-    #- name: Executar testes de integração
-    #  run: dotnet test ${{ env.Test_Integration_Project_Path }}
+    - name: Executar testes de integração
+      run: dotnet test ${{ env.Test_Integration_Project_Path }}
 
     # Restaurar a aplicação para popular a pasta obj com RuntimeIdentifiers
     - name: Restaurar a aplicação
       run: dotnet restore ${{ env.Solution_Name }}
 
-    # (Opcional) Compile a solução
+    # Compile a solução
     - name: Compilar a solução
       run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
       env:

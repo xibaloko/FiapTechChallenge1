@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseHttpMetrics();
+    app.MapMetrics();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
