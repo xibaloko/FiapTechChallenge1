@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest  # Mudança para um runner Linux
 
     env:
-      Solution_Name: FiapTechChallenge1/FiapTechChallenge1.sln                         # Substitua pelo nome da sua solução, i.e. MyWpfApp.sln.
-      Test_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Tests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
-      Test_Integration_Project_Path: FiapTechChallenge1/FiapTechChallenge.IntegrationTests/FiapTechChallenge.IntegrationTests.csproj  # Substitua pelo caminho do seu projeto de teste, i.e. MyWpfApp.Tests/MyWpfApp.Tests.csproj.
+      Solution_Name: FiapTechChallenge1/FiapTechChallenge1.sln                        
+      Test_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Tests.csproj
+      Test_Integration_Project_Path: FiapTechChallenge1/FiapTechChallenge.IntegrationTests/FiapTechChallenge.IntegrationTests.csproj
 
     steps:
     - name: Checkout
