@@ -13,8 +13,7 @@ jobs:
       matrix:
         configuration: [Release]
 
-    runs-on: windows-latest  # Para uma lista de tipos de runners disponíveis, consulte
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: ubuntu-latest  # Mudança para um runner Linux
 
     env:
       Solution_Name: FiapTechChallenge1/FiapTechChallenge1.sln                         # Substitua pelo nome da sua solução, i.e. MyWpfApp.sln.
@@ -27,20 +26,19 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Configurar Docker
-    - name: Configurar Docker
-      run: |
-        Start-Service docker
-        docker info
+    # Instalar Docker Compose (se necessário)
+    - name: Instalar Docker Compose
+      run: sudo apt-get update && sudo apt-get install -y docker-compose
 
     # Executar Docker Compose
     - name: Executar Docker Compose
       run: docker-compose -f FiapTechChallenge1/docker-compose.yml up -d
 
+    # Aguardar a inicialização do banco de dados
     - name: Aguardar a inicialização do banco de dados
-      run: sleep 5
+      run: sleep 30  # Ajuste o tempo conforme necessário
 
-    # Instale o workload do .NET Core
+    # Instalar .NET Core
     - name: Instalar .NET Core
       uses: actions/setup-dotnet@v4
       with:
