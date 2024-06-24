@@ -40,7 +40,7 @@ public class TestDataFactory
 
         var personFaker = new Faker<Person>()
             .RuleFor(p => p.Id, f => f.Random.Int(1, 1000))
-            .RuleFor(p => p.Name, f => f.Name.FullName())
+            .RuleFor(p => p.Name, f => "Raphael Muller")
             .RuleFor(p => p.CPF, f => f.Random.Replace("###########"))
             .RuleFor(p => p.Birthday, f => f.Date.Past(30, DateTime.Now.AddYears(-20)))
             .RuleFor(p => p.Email, f => f.Internet.Email())
