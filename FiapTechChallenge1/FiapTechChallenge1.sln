@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.API", "Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.Tests", "FiapTechChallenge.Tests\FiapTechChallenge.Tests.csproj", "{EA77385F-3984-428F-9874-9DED415B2B1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.IntegrationTests", "FiapTechChallenge.IntegrationIntegrationTests\FiapTechChallenge.IntegrationTests.csproj", "{510482F9-0709-4A3B-B631-C45346825C5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.IntegrationTests", "FiapTechChallenge.IntegrationTests\FiapTechChallenge.IntegrationTests.csproj", "{510482F9-0709-4A3B-B631-C45346825C5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
