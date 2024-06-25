@@ -6,12 +6,4 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
     ports:
-      - "1433:1433"
-  mssqltools:
-    image: mcr.microsoft.com/mssql-tools
-    depends_on:
-      - sqlserver
-    volumes:
-      - ./CriarBanco.sql:/tmp/CriarBanco.sql
-      - ./init-sqlserver.sh:/tmp/init-sqlserver.sh
-    command: /bin/bash ./tmp/init-sqlserver.sh
+      - "1444:1433"

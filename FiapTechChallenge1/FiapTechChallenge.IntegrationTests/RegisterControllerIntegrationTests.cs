@@ -22,15 +22,16 @@ namespace FiapTechChallenge.IntegrationTests
 
             // Configuração do DbContext para usar o SQL Server no Docker
             serviceCollection.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer("Data Source=localhost,1433;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"));
+                options.UseSqlServer("Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"));
 
             // Registrar o DbInitializer
             serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
             serviceCollection.AddScoped<IDbInitializer, DbInitializer>();
             serviceCollection.AddScoped<IPersonService, PersonService>();
             serviceCollection.AddScoped<ISuporteDataService, SuporteDataService>();
-
             ServiceProvider = serviceCollection.BuildServiceProvider();
+            // Inicializar a base de dados
+            InitializeDatabase();
         }
 
         [Fact]
@@ -47,7 +48,23 @@ namespace FiapTechChallenge.IntegrationTests
 
                 var okResult = Assert.IsType<OkObjectResult>(result);
                 var returnValue = Assert.IsType<List<PersonResponseDto>>(okResult.Value);
-                Assert.Equal(1, returnValue.Count);
+                Assert.Single(returnValue);
+            }
+        }
+
+
+
+        private void InitializeDatabase()
+        {
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                context.Database.EnsureDeleted(); // Opcional: Limpa o banco de dados antes de cada teste
+                context.Database.EnsureCreated();
+
+                var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                dbInitializer.Initialize();
+                
             }
         }
     }
