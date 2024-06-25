@@ -36,7 +36,7 @@ jobs:
 
     # Aguardar a inicialização do banco de dados
     - name: Aguardar a inicialização do banco de dados
-      run: sleep 30  # Ajuste o tempo conforme necessário
+      run: sleep 5  # Ajuste o tempo conforme necessário
 
     # Instalar .NET Core
     - name: Instalar .NET Core
