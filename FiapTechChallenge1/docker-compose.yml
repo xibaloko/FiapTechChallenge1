@@ -6,7 +6,7 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
     ports:
-      - "1433:1433"
+      - "1444:1433"
   mssqltools:
     image: mcr.microsoft.com/mssql-tools
     depends_on:

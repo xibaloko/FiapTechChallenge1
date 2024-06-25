@@ -22,7 +22,7 @@ namespace FiapTechChallenge.IntegrationTests
 
             // Configuração do DbContext para usar o SQL Server no Docker
             serviceCollection.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer("Data Source=localhost,1433;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"));
+                options.UseSqlServer("Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"));
 
             // Registrar o DbInitializer
             serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
