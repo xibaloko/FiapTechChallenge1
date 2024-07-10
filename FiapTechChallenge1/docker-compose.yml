@@ -1,0 +1,53 @@
+services:
+  backend_api:
+    build:
+      dockerfile: ./FiapTechChallenge.API/Dockerfile
+    container_name: FiapTechChallenge.API
+    ports:
+      - "4000:4000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://*:4000"
+      MicrosoftSQLServer__ConnectionString: "Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
+    depends_on:
+        - sql_server
+
+  sql_server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sql_server
+    environment:
+      SA_PASSWORD: "SqlServer2019!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1444:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus-grafana/prometheus:/etc/prometheus
+      - prom_data:/prometheus
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
+
+volumes:
+  sql_data:
+  prom_data:
