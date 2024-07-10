@@ -26,4 +26,4 @@ scrape_configs:
     scrape_interval: 5s  # Intervalo de coleta para este job específico
     static_configs:
       - targets:
-        - host.docker.internal:5072
+        - FiapTechChallenge.API:4000
