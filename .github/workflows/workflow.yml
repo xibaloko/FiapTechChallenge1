@@ -32,7 +32,7 @@ jobs:
 
     # Executar Docker Compose
     - name: Executar Docker Compose
-      run: docker-compose -f FiapTechChallenge1/docker-compose.yml up -d
+      run: docker-compose -f FiapTechChallenge1/docker-compose-integration.yml up -d
 
     # Aguardar a inicialização do banco de dados
     - name: Aguardar a inicialização do banco de dados
