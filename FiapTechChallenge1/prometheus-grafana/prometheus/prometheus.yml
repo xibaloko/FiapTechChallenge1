@@ -23,7 +23,7 @@ scrape_configs:
         - localhost:9090
 
   - job_name: 'api_dotnet'
-    scrape_interval: 15s  # Intervalo de coleta para este job específico
+    scrape_interval: 5s  # Intervalo de coleta para este job específico
     static_configs:
       - targets:
         - host.docker.internal:5072
