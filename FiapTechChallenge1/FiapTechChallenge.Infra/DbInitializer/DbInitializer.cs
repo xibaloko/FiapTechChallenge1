@@ -19,7 +19,7 @@ namespace FiapTechChallenge.Infra.DbInitializer
         {
             using (var context = new AppDbContext(_serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>()))
             {
-                context.Database.EnsureCreated();
+                context.Database.EnsureCreated(); 
 
                 if (context.Regions.Any())
                 {
