@@ -35,7 +35,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fiap TechChallenge", Version = "v1" });
 });
 
-var app = builder.Build();
+var app = builder.Build(); 
 
 app.UseHttpMetrics();
 app.MapMetrics();
