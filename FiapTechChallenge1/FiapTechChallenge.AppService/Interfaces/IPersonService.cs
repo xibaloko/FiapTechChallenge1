@@ -11,7 +11,6 @@ namespace FiapTechChallenge.AppService.Interfaces
         Task<PersonResponseDto?> GetContactById(int id);
         Task<ICollection<PersonResponseDto>?> GetContactsByDDD(int ddd);
         Task<ICollection<PersonResponseDto>?> GetContactsByRegion(int regionId);
-        Task<(bool, string, PersonResponseDto?)> UpdateContact(int id, PersonRequestByDDDDto personDto);
-        
+        Task<(bool, string, PersonResponseDto?)> UpdateContact(int id, UpdateRequest personDto);
     }
 }
