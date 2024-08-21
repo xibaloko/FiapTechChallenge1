@@ -164,6 +164,8 @@ namespace FiapTechChallenge.Tests
             var ex = Assert.Throws<ValidationException>(() => ValidateDddNumber(invalidDddNumber));
             Assert.Equal("The field DDDNumber must be between 1 and 2147483647.", ex.Message);
         }
+        
+        // Validação de entidades vem até aqui
 
         [Fact]
         public async Task CreateContact_ShouldReturnFalse_WhenDDDNumberIsInvalid()
