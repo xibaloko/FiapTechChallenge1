@@ -8,12 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FiapTechChallenge.Domain\FiapTechChallenge.Domain.csproj" />
+    <ProjectReference Include="..\FiapTechChallenge.Producer\FiapTechChallenge.Producer.csproj" />
   </ItemGroup>
 </Project>
