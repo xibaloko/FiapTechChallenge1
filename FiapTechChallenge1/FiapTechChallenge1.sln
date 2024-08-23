@@ -13,7 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.API", "Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.Tests", "FiapTechChallenge.Tests\FiapTechChallenge.Tests.csproj", "{EA77385F-3984-428F-9874-9DED415B2B1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.IntegrationTests", "FiapTechChallenge.IntegrationTests\FiapTechChallenge.IntegrationTests.csproj", "{510482F9-0709-4A3B-B631-C45346825C5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.IntegrationTests", "FiapTechChallenge.IntegrationTests\FiapTechChallenge.IntegrationTests.csproj", "{510482F9-0709-4A3B-B631-C45346825C5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.Consumer", "FiapTechChallenge.Consumer\FiapTechChallenge.Consumer.csproj", "{0E4DE36B-05AB-4414-8AC5-3DE3D2873154}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.Producer", "FiapTechChallenge.Producer\FiapTechChallenge.Producer.csproj", "{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Producers", "2.Producers", "{373F7221-CB69-47F1-BCC4-C09AB9BC983E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Consumers", "1.Consumers", "{D8493636-F6CB-401E-9B89-19A3272CE963}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +53,21 @@ Global
 		{510482F9-0709-4A3B-B631-C45346825C5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{510482F9-0709-4A3B-B631-C45346825C5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{510482F9-0709-4A3B-B631-C45346825C5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E4DE36B-05AB-4414-8AC5-3DE3D2873154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E4DE36B-05AB-4414-8AC5-3DE3D2873154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E4DE36B-05AB-4414-8AC5-3DE3D2873154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E4DE36B-05AB-4414-8AC5-3DE3D2873154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0E4DE36B-05AB-4414-8AC5-3DE3D2873154} = {D8493636-F6CB-401E-9B89-19A3272CE963}
+		{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3} = {373F7221-CB69-47F1-BCC4-C09AB9BC983E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5FEA3871-231D-4ED2-993E-F7E8E448FB5B}
