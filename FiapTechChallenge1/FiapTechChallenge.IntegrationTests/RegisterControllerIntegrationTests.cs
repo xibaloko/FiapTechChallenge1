@@ -26,7 +26,8 @@ namespace FiapTechChallenge.IntegrationTests
 
             // Configuração do DbContext para usar o SQL Server no Docker
             serviceCollection.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer("Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"));
+                options.UseSqlServer(
+                    "Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"));
 
             // Registrar o DbInitializer
             serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -53,6 +54,7 @@ namespace FiapTechChallenge.IntegrationTests
                 {
                     phone.DDDNumber = 11;
                 }
+
                 var result = await registerController.CreateContact(personDto);
 
                 var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
@@ -136,11 +138,13 @@ namespace FiapTechChallenge.IntegrationTests
                 var personService = scope.ServiceProvider.GetService<IPersonService>();
                 Person person = await CreatePersonTest(scope);
                 RegisterController registerController = new RegisterController(unitOfWorkService, personService);
-                var personDto = PersonRequestDtoFaker.GeneratePersonRequest();
-                foreach (var phone in personDto.Phones)
-                {
-                    phone.DDDNumber = 11;
-                }
+                var personDto = PersonRequestDtoFaker.GeneratePersonUpdateRequest();
+                if (personDto.Phones != null)
+                    foreach (var phone in personDto.Phones)
+                    {
+                        phone.DDDNumber = 11;
+                    }
+
                 var result = await registerController.UpdateContact(1, personDto);
                 var okResult = Assert.IsType<OkObjectResult>(result);
                 var returnValue = Assert.IsType<PersonResponseDto>(okResult.Value);
@@ -177,14 +181,14 @@ namespace FiapTechChallenge.IntegrationTests
                 Created = DateTime.Now,
                 Modified = DateTime.Now,
                 Phones = new List<Phone>()
+                {
+                    new Phone()
                     {
-                        new Phone()
-                        {
-                            DDDId = 11,
-                            PhoneNumber = "999999999",
-                            PhoneTypeId = 1,
-                        }
+                        DDDId = 11,
+                        PhoneNumber = "999999999",
+                        PhoneTypeId = 1,
                     }
+                }
             };
             await context.AddAsync(person);
             context.SaveChanges();

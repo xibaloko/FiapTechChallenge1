@@ -13,6 +13,7 @@ namespace FiapTechChallenge.API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPersonService _contactsServices;
+
         public RegisterController(IUnitOfWork unitOfWork, IPersonService contactsServices)
         {
             _unitOfWork = unitOfWork;
@@ -28,7 +29,7 @@ namespace FiapTechChallenge.API.Controllers
         public async Task<IActionResult> GetAllContacts()
         {
             ICollection<PersonResponseDto>? res = await _contactsServices.GetAllContactsAsync();
-            
+
             if (res.Any())
             {
                 return Ok(res);
@@ -50,6 +51,7 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return Ok(contact);
             }
+
             return NotFound();
         }
 
@@ -66,6 +68,7 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return Ok(contacts);
             }
+
             return NotFound();
         }
 
@@ -82,6 +85,7 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return Ok(contacts);
             }
+
             return NotFound();
         }
 
@@ -97,6 +101,7 @@ namespace FiapTechChallenge.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             (bool status, string msg, int personID) = await _contactsServices.CreateContact(personDto);
             if (status)
             {
@@ -107,27 +112,29 @@ namespace FiapTechChallenge.API.Controllers
                 return BadRequest(msg);
             }
         }
-        
+
         /// <summary>
         /// inform an id and fill the fields you want to modify to update a contact, remember to inform 'DDDNumber' and the exact description of the 'PhoneType'
         /// </summary>
         /// <response code="200">returns the modified contact</response>
         /// <response code="400">there are missing fields or fields with errors</response>
         [HttpPut("update-contact/{id}")]
-        public async Task<IActionResult> UpdateContact(int id, [FromBody] PersonRequestByDDDDto personDto)
+        public async Task<IActionResult> UpdateContact(int id, [FromBody] UpdateRequest personDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             (bool status, string msg, PersonResponseDto? person) = await _contactsServices.UpdateContact(id, personDto);
             if (status)
             {
                 return Ok(person);
             }
+
             return BadRequest(msg);
         }
-        
+
         /// <summary>
         /// inform an id to delete a contact
         /// </summary>
@@ -143,8 +150,8 @@ namespace FiapTechChallenge.API.Controllers
                 {
                     Message = "This person was successfully deleted."
                 });
-
             }
+
             return BadRequest(msg);
         }
     }
