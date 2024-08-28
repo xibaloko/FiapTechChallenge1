@@ -1,5 +1,13 @@
+using FiapTechChallenge.AppService.Interfaces;
+using FiapTechChallenge.AppService.Services;
 using FiapTechChallenge.Consumer;
+using FiapTechChallenge.Infra.Data;
+using FiapTechChallenge.Infra.DbInitializer;
+using FiapTechChallenge.Infra.Interfaces;
+using FiapTechChallenge.Infra.Repositories;
+using Microsoft.EntityFrameworkCore;
 using MassTransit;
+using MassTransit.RabbitMqTransport;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
@@ -11,6 +19,16 @@ IHost host = Host.CreateDefaultBuilder(args)
         var senha = configuration.GetSection("MassTransit")["Senha"] ?? string.Empty;
         services.AddHostedService<Worker>();
 
+        services.AddScoped<IPersonService, PersonService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IDbInitializer, DbInitializer>();
+
+        services.AddDbContext<AppDbContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        }, ServiceLifetime.Scoped);
+
+        
         services.AddMassTransit(x =>
         {
             x.UsingRabbitMq((context, cfg) =>
@@ -20,9 +38,12 @@ IHost host = Host.CreateDefaultBuilder(args)
                     h.Username(usuario);
                     h.Password(senha);
                 });
+
                 cfg.ReceiveEndpoint(fila, e =>
                 {
-                    e.Consumer<ContactConsumer>();
+                    //e.Consumer<ContactConsumer>(context);  // Resolva o consumidor a partir do contexto
+                    e.ConfigureConsumer<ContactConsumer>(context);  // Resolva o consumidor a partir do contexto
+                    //e.ConfigureConsumer(context, typeof(ContactConsumer));
                 });
 
                 cfg.ConfigureEndpoints(context);
@@ -30,6 +51,9 @@ IHost host = Host.CreateDefaultBuilder(args)
 
             x.AddConsumer<ContactConsumer>();
         });
+
+
+
     })
     .Build();
 

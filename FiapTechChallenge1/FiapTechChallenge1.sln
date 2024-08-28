@@ -15,13 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.IntegrationTests", "FiapTechChallenge.IntegrationTests\FiapTechChallenge.IntegrationTests.csproj", "{510482F9-0709-4A3B-B631-C45346825C5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.Consumer", "FiapTechChallenge.Consumer\FiapTechChallenge.Consumer.csproj", "{0E4DE36B-05AB-4414-8AC5-3DE3D2873154}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.Consumer", "FiapTechChallenge.Consumer\FiapTechChallenge.Consumer.csproj", "{0E4DE36B-05AB-4414-8AC5-3DE3D2873154}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiapTechChallenge.Producer", "FiapTechChallenge.Producer\FiapTechChallenge.Producer.csproj", "{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiapTechChallenge.Producer", "FiapTechChallenge.Producer\FiapTechChallenge.Producer.csproj", "{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Producers", "2.Producers", "{373F7221-CB69-47F1-BCC4-C09AB9BC983E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Consumers", "1.Consumers", "{D8493636-F6CB-401E-9B89-19A3272CE963}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.API Principal", "3.API Principal", "{D108B1F8-10EF-41D5-BE58-19B211B363FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Domain", "_Domain", "{F1C5E67A-C6DB-4650-86C7-27F6BD61A194}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +70,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{F3E13F8A-D027-4CC1-ACCB-D5235077DD96} = {F1C5E67A-C6DB-4650-86C7-27F6BD61A194}
+		{276F3AE6-35EB-4977-888C-BF8995587ABA} = {F1C5E67A-C6DB-4650-86C7-27F6BD61A194}
+		{67ADBC04-D6E1-44F5-969F-2B869683DC55} = {F1C5E67A-C6DB-4650-86C7-27F6BD61A194}
+		{E191B35B-DF8D-4959-A8BF-E7638B0C5CEF} = {D108B1F8-10EF-41D5-BE58-19B211B363FC}
 		{0E4DE36B-05AB-4414-8AC5-3DE3D2873154} = {D8493636-F6CB-401E-9B89-19A3272CE963}
 		{EA893BF7-92C5-4AF1-9B5D-1B4EFC2076D3} = {373F7221-CB69-47F1-BCC4-C09AB9BC983E}
 	EndGlobalSection

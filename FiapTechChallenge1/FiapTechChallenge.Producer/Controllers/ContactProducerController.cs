@@ -1,6 +1,8 @@
-﻿using FiapTechChallenge.Producer.DTOs;
+﻿using FiapTechChallenge.Domain.DTOs.RequestsDto;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace FiapTechChallenge.Producer.Controllers
 {
@@ -26,10 +28,12 @@ namespace FiapTechChallenge.Producer.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var nomeFila = _configuration.GetSection("MassTransit")["NomeFila"]??string.Empty;
-            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:fila"));
+            var nomeFila = _configuration.GetSection("MassTransit")["NomeFila"] ?? string.Empty;
+            var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
+            //var json = JsonConvert.SerializeObject(personDto);
+            //var data = new StringContent(json, Encoding.UTF8, "application/json");
             await endpoint.Send(personDto);
-            //(bool status, string msg, int personID) = await _contactsServices.CreateContact(personDto);
+
             return Ok();
         }
     }
