@@ -20,15 +20,15 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<Worker>();
 
         services.AddScoped<IPersonService, PersonService>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDbInitializer, DbInitializer>();
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         }, ServiceLifetime.Scoped);
 
-        
+
         services.AddMassTransit(x =>
         {
             x.UsingRabbitMq((context, cfg) =>
@@ -41,15 +41,18 @@ IHost host = Host.CreateDefaultBuilder(args)
 
                 cfg.ReceiveEndpoint(fila, e =>
                 {
-                    //e.Consumer<ContactConsumer>(context);  // Resolva o consumidor a partir do contexto
-                    e.ConfigureConsumer<ContactConsumer>(context);  // Resolva o consumidor a partir do contexto
-                    //e.ConfigureConsumer(context, typeof(ContactConsumer));
+                    e.PrefetchCount = 1;
+                    e.ConfigureConsumer<UpdateContactConsumer>(context);
+                    e.ConfigureConsumer<CreateContactConsumer>(context);
+                    e.ConfigureConsumer<DeleteContactConsumer>(context);
                 });
 
                 cfg.ConfigureEndpoints(context);
             });
 
-            x.AddConsumer<ContactConsumer>();
+            x.AddConsumer<CreateContactConsumer>();
+            x.AddConsumer<UpdateContactConsumer>();
+            x.AddConsumer<DeleteContactConsumer>();
         });
 
 

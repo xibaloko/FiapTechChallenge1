@@ -87,9 +87,11 @@ namespace FiapTechChallenge.API.Controllers
             }
 
             return NotFound();
-        }
+        }  
+    }
+}
 
-        /// <summary>
+/*      /// <summary>
         /// fill the required fields to create a new contact, remember to inform 'DDDNumber' and the exact description of the 'PhoneType'
         /// </summary>
         /// <response code="201">returns the route to access the created contact</response>
@@ -154,5 +156,4 @@ namespace FiapTechChallenge.API.Controllers
 
             return BadRequest(msg);
         }
-    }
-}
+*/

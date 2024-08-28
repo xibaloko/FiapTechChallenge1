@@ -1,4 +1,5 @@
 ﻿using FiapTechChallenge.Domain.DTOs.RequestsDto;
+using FiapTechChallenge.Domain.DTOs.ResponsesDto;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -29,11 +30,44 @@ namespace FiapTechChallenge.Producer.Controllers
                 return BadRequest(ModelState);
             }
             var nomeFila = _configuration.GetSection("MassTransit")["NomeFila"] ?? string.Empty;
-            var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
-            //var json = JsonConvert.SerializeObject(personDto);
-            //var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));          
             await endpoint.Send(personDto);
+            return Ok();
+        }
+       
+        /// <summary>
+        /// inform an id and fill the fields you want to modify to update a contact, remember to inform 'DDDNumber' and the exact description of the 'PhoneType'
+        /// </summary>
+        /// <response code="200">returns the modified contact</response>
+        /// <response code="400">there are missing fields or fields with errors</response>
+        [HttpPut("update-contact")]
+        public async Task<IActionResult> UpdateContact([FromBody] UpdateRequest personDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var nomeFila = _configuration.GetSection("MassTransit")["NomeFila"] ?? string.Empty;
+            var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
+            await endpoint.Send(personDto);
+            return Ok();           
+        }
 
+        /// <summary>
+        /// inform an id to delete a contact
+        /// </summary>
+        /// <response code="200">returns a successful message</response>
+        /// <response code="404">the contact was not found.</response>
+        [HttpDelete("delete-contact/{id}")]
+        public async Task<IActionResult> DeleteContact([FromBody]DeletePersonRequest personDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var nomeFila = _configuration.GetSection("MassTransit")["NomeFila"] ?? string.Empty;
+            var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
+            await endpoint.Send(personDto);
             return Ok();
         }
     }
