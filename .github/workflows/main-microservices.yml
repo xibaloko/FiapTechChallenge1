@@ -1,0 +1,63 @@
+name: .NET Core Desktop Microservices
+
+on:
+  push:
+    branches: [ "main-microsservice" ]
+  pull_request:
+    branches: [ "main-microsservice" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: ubuntu-latest  # Mudança para um runner Linux
+
+    env:
+      Solution_Name: FiapTechChallenge1/FiapTechChallenge1.sln                        
+      Test_Project_Path: FiapTechChallenge1/FiapTechChallenge.Tests/FiapTechChallenge.Tests.csproj
+      Test_Integration_Project_Path: FiapTechChallenge1/FiapTechChallenge.IntegrationTests/FiapTechChallenge.IntegrationTests.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Instalar Docker Compose (se necessário)
+    - name: Instalar Docker Compose
+      run: sudo apt-get update && sudo apt-get install -y docker-compose
+
+    # Executar Docker Compose
+    - name: Executar Docker Compose
+      run: docker-compose -f FiapTechChallenge1/docker-compose-integration.yml up -d
+
+    # Aguardar a inicialização do banco de dados
+    - name: Aguardar a inicialização do banco de dados
+      run: sleep 5  # Ajuste o tempo conforme necessário
+
+    # Instalar .NET Core
+    - name: Instalar .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    # Executar todos os testes unitários na solução
+    - name: Executar testes unitários
+      run: dotnet test ${{ env.Test_Project_Path }}
+
+    # Executar todos os testes de integração na solução
+    - name: Executar testes de integração
+      run: dotnet test ${{ env.Test_Integration_Project_Path }}
+
+    # Restaurar a aplicação para popular a pasta obj com RuntimeIdentifiers
+    - name: Restaurar a aplicação
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    # Compile a solução
+    - name: Compilar a solução
+      run: dotnet build ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
+      env:
+        Configuration: ${{ matrix.configuration }}
