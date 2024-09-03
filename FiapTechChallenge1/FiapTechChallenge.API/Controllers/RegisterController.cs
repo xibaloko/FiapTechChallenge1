@@ -154,5 +154,7 @@ namespace FiapTechChallenge.API.Controllers
 
             return BadRequest(msg);
         }
+
     }
 }
+

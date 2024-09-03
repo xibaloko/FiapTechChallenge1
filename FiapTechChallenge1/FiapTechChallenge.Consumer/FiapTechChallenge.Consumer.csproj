@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-FiapTechChallenge.Consumer-f89df843-ca42-4272-8d57-2a9d4a045f37</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FiapTechChallenge.AppService\FiapTechChallenge.AppService.csproj" />
+    <ProjectReference Include="..\FiapTechChallenge.Domain\FiapTechChallenge.Domain.csproj" />
+    <ProjectReference Include="..\FiapTechChallenge.Infra\FiapTechChallenge.Infra.csproj" />
+  </ItemGroup>
+</Project>
