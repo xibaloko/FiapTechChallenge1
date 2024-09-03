@@ -58,7 +58,7 @@ namespace FiapTechChallenge.Producer.Controllers
         /// </summary>
         /// <response code="200">returns a successful message</response>
         /// <response code="404">the contact was not found.</response>
-        [HttpDelete("delete-contact/{id}")]
+        [HttpDelete("delete-contact")]
         public async Task<IActionResult> DeleteContact([FromBody]DeletePersonRequest personDto)
         {
             if (!ModelState.IsValid)
