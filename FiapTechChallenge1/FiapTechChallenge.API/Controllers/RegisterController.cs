@@ -87,74 +87,7 @@ namespace FiapTechChallenge.API.Controllers
             }
 
             return NotFound();
-        }
-
-        /// <summary>
-        /// fill the required fields to create a new contact, remember to inform 'DDDNumber' and the exact description of the 'PhoneType'
-        /// </summary>
-        /// <response code="201">returns the route to access the created contact</response>
-        /// <response code="400">there are missing fields or fields with errors</response>
-        [HttpPost("create-contact")]
-        public async Task<IActionResult> CreateContact([FromBody] PersonRequestByDDDDto personDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            (bool status, string msg, int personID) = await _contactsServices.CreateContact(personDto);
-            if (status)
-            {
-                return CreatedAtAction(nameof(GetContactById), new { id = personID }, null);
-            }
-            else
-            {
-                return BadRequest(msg);
-            }
-        }
-
-        /// <summary>
-        /// inform an id and fill the fields you want to modify to update a contact, remember to inform 'DDDNumber' and the exact description of the 'PhoneType'
-        /// </summary>
-        /// <response code="200">returns the modified contact</response>
-        /// <response code="400">there are missing fields or fields with errors</response>
-        [HttpPut("update-contact/{id}")]
-        public async Task<IActionResult> UpdateContact(int id, [FromBody] UpdateRequest personDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            (bool status, string msg, PersonResponseDto? person) = await _contactsServices.UpdateContact(id, personDto);
-            if (status)
-            {
-                return Ok(person);
-            }
-
-            return BadRequest(msg);
-        }
-
-        /// <summary>
-        /// inform an id to delete a contact
-        /// </summary>
-        /// <response code="200">returns a successful message</response>
-        /// <response code="404">the contact was not found.</response>
-        [HttpDelete("delete-contact/{id}")]
-        public async Task<IActionResult> DeleteContact(int id)
-        {
-            (bool status, string msg) = await _contactsServices.DeleteContact(id);
-            if (status)
-            {
-                return Ok(new
-                {
-                    Message = "This person was successfully deleted."
-                });
-            }
-
-            return BadRequest(msg);
-        }
-
+        }       
     }
 }
 
