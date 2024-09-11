@@ -1,4 +1,25 @@
 services:
+ 
+  backend_worker_consumer:
+    build:
+      dockerfile: ./FiapTechChallenge.Consumer/Dockerfile
+    container_name: FiapTechChallenge.Worker_Consumer
+    depends_on:
+        - sql_server
+ 
+  backend_api_producer:
+    build:
+      dockerfile: ./FiapTechChallenge.Producer/Dockerfile
+    container_name: FiapTechChallenge.API_Producer
+    ports:
+      - "4001:4001"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://*:4001"
+      MicrosoftSQLServer__ConnectionString: "Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
+    depends_on:
+        - sql_server
+
   backend_api:
     build:
       dockerfile: ./FiapTechChallenge.API/Dockerfile
@@ -48,6 +69,19 @@ services:
     volumes:
       - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
 
+  rabbitmq:
+    image: masstransit/rabbitmq 
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   sql_data:
   prom_data:
+  rabbitmq_data:  
