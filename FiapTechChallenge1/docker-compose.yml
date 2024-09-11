@@ -16,7 +16,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://*:4001"
-      MicrosoftSQLServer__ConnectionString: "Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
+      MicrosoftSQLServer__ConnectionString: "Server=sql_server;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
     depends_on:
         - sql_server
 
@@ -29,7 +29,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: "http://*:4000"
-      MicrosoftSQLServer__ConnectionString: "Data Source=localhost,1444;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
+      MicrosoftSQLServer__ConnectionString: "Server=sql_server;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
     depends_on:
         - sql_server
 
