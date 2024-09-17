@@ -45,6 +45,18 @@ IHost host = Host.CreateDefaultBuilder(args)
                     e.ConfigureConsumer<UpdateContactConsumer>(context);
                     e.ConfigureConsumer<CreateContactConsumer>(context);
                     e.ConfigureConsumer<DeleteContactConsumer>(context);
+
+                    // Configurando Retry
+                    //.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+
+                    // Configurando Circuit Breaker
+                    e.UseCircuitBreaker(cb =>
+                    {
+                        cb.TrackingPeriod = TimeSpan.FromMinutes(1);
+                        cb.TripThreshold = 15;
+                        cb.ActiveThreshold = 2;
+                        cb.ResetInterval = TimeSpan.FromMinutes(5);
+                    });
                 });
 
                 cfg.ConfigureEndpoints(context);

@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using FiapTechChallenge.AppService.Interfaces;
 using FiapTechChallenge.Domain.DTOs.RequestsDto;
+using FiapTechChallenge.Domain.DTOs.ResponsesDto;
 
 namespace FiapTechChallenge.Consumer;
 
@@ -17,7 +18,10 @@ public class UpdateContactConsumer : IConsumer<UpdateRequest>
     {
         var contact = context.Message;
         Console.WriteLine($"Contact received: {contact.Name} - {contact.Email}");
-        await _personService.UpdateContact(contact.Id, contact);
-
+        (bool result, string message, PersonResponseDto? dto) = await _personService.UpdateContact(contact.Id, contact);
+        if (!result)
+        {
+            throw new Exception(message);
+        }
     }
 }
