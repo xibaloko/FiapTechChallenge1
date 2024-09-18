@@ -4,6 +4,8 @@
 FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
 USER app
 WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
 
 
 # Esta fase é usada para compilar o projeto de serviço

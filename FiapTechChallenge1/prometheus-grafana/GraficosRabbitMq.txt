@@ -1,4 +1,4 @@
-{
+﻿{
   "annotations": {
     "list": [
       {
@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -108,14 +108,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_requests_received_total{job=\"api_dotnet-producer\"}[5m])) by (code)",
+          "expr": "sum(increase(rabbitmq_queue_messages_published_total[1m]))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Contagem de Requisições Por Status de Resposta",
+      "title": "Mensagens Publicadas para o Rabbit",
       "type": "timeseries"
     },
     {
@@ -183,7 +183,7 @@
         "x": 12,
         "y": 0
       },
-      "id": 5,
+      "id": 7,
       "options": {
         "legend": {
           "calcs": [],
@@ -204,14 +204,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"api_dotnet-producer\"}[1m])) by (le, endpoint))",
+          "expr": "sum(increase(rabbitmq_global_messages_delivered_total[1m]))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Latência por Endpoint",
+      "title": "Mensagens Entregues pelo RabbitMQ",
       "type": "timeseries"
     },
     {
@@ -299,8 +299,8 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "editorMode": "builder",
-          "expr": "process_working_set_bytes{job=\"api_dotnet-producer\"} / 1024 / 1024",
+          "editorMode": "code",
+          "expr": "rabbitmq_process_resident_memory_bytes / 1024 / 1024",
           "instant": false,
           "legendFormat": "{{job}} - {{__name__}} (MB)",
           "range": true,
@@ -308,102 +308,6 @@
         }
       ],
       "title": "Uso de Memória",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 8
-      },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "maxHeight": 600,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "increase(process_cpu_seconds_total{job=\"api_dotnet-producer\"}[1m])",
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Uso de CPU",
       "type": "timeseries"
     }
   ],
@@ -420,8 +324,8 @@
   "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "browser",
-  "title": "Dashboards",
-  "uid": "adpp17oo5jmyoa",
-  "version": 1,
+  "title": "Rabbit",
+  "uid": "adpp17oo5jmyoo",
+  "version": 3,
   "weekStart": ""
 }

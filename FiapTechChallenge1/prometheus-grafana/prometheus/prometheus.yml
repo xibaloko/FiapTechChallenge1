@@ -5,11 +5,11 @@ global:
 
 alerting:
   alertmanagers:
-  - static_configs:
-    - targets: []
-    scheme: http
-    timeout: 10s
-    api_version: v1
+    - static_configs:
+        - targets: [ ]
+      scheme: http
+      timeout: 10s
+      api_version: v1
 
 scrape_configs:
   - job_name: prometheus
@@ -20,10 +20,27 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets:
-        - localhost:9090
+          - localhost:9090
 
-  - job_name: 'api_dotnet'
+  - job_name: 'api_dotnet-consumer-api'
     scrape_interval: 5s  # Intervalo de coleta para este job específico
     static_configs:
       - targets:
-        - FiapTechChallenge.API:4000
+          - FiapTechChallenge.API:4000
+
+  - job_name: 'api_dotnet-consumer'
+    scrape_interval: 5s  # Intervalo de coleta para este job específico
+    static_configs:
+      - targets:
+          - FiapTechChallenge.Worker_Consumer:4002
+
+  - job_name: 'api_dotnet-producer'
+    scrape_interval: 5s  # Intervalo de coleta para este job específico
+    static_configs:
+      - targets:
+          - FiapTechChallenge.API_Producer:4001
+
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets:
+          - rabbitmq:15692

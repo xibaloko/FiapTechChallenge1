@@ -1,12 +1,14 @@
 services:
- 
+  
   backend_worker_consumer:
     build:
       dockerfile: ./FiapTechChallenge.Consumer/Dockerfile
     container_name: FiapTechChallenge.Worker_Consumer
+    ports:
+      - "4002:4002"
     depends_on:
-        - sql_server
- 
+      - sql_server
+  
   backend_api_producer:
     build:
       dockerfile: ./FiapTechChallenge.Producer/Dockerfile
@@ -18,7 +20,7 @@ services:
       ASPNETCORE_URLS: "http://*:4001"
       MicrosoftSQLServer__ConnectionString: "Server=sql_server;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
     depends_on:
-        - sql_server
+      - sql_server
 
   backend_api:
     build:
@@ -31,7 +33,7 @@ services:
       ASPNETCORE_URLS: "http://*:4000"
       MicrosoftSQLServer__ConnectionString: "Server=sql_server;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
     depends_on:
-        - sql_server
+      - sql_server
 
   sql_server:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -70,16 +72,20 @@ services:
       - ./prometheus-grafana/grafana:/etc/grafana/provisioning/datasources
 
   rabbitmq:
-    image: masstransit/rabbitmq 
+    image: rabbitmq:management
     container_name: rabbitmq
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "15672:15672"  # Porta da interface de gerenciamento
+      - "5672:5672"    # Porta padrão de comunicação
+      - "15692:15692"  # Porta para o endpoint de métricas Prometheus
     environment:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    command: >
+      sh -c "rabbitmq-plugins enable --offline rabbitmq_prometheus &&
+             rabbitmq-server"
 
 volumes:
   sql_data:

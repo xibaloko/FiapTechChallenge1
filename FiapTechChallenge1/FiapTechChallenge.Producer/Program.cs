@@ -1,4 +1,5 @@
 using MassTransit;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,9 @@ builder.Services.AddMassTransit(x =>
 
 
 var app = builder.Build();
+
+app.UseHttpMetrics();
+app.MapMetrics();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

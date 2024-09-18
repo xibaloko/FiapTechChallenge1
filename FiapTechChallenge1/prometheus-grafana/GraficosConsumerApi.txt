@@ -1,4 +1,4 @@
-{
+﻿{
   "annotations": {
     "list": [
       {
@@ -108,7 +108,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_requests_received_total{job=\"api_dotnet-producer\"}[5m])) by (code)",
+          "expr": "sum(increase(http_requests_received_total{job=\"api_dotnet-consumer-api\"}[5m])) by (code)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -175,7 +175,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "create-contact"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -204,7 +229,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"api_dotnet-producer\"}[1m])) by (le, endpoint))",
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"api_dotnet-consumer-api\"}[1m])) by (le, endpoint))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -300,7 +325,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "builder",
-          "expr": "process_working_set_bytes{job=\"api_dotnet-producer\"} / 1024 / 1024",
+          "expr": "process_working_set_bytes{job=\"api_dotnet-consumer-api\"} / 1024 / 1024",
           "instant": false,
           "legendFormat": "{{job}} - {{__name__}} (MB)",
           "range": true,
@@ -396,7 +421,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "increase(process_cpu_seconds_total{job=\"api_dotnet-producer\"}[1m])",
+          "expr": "increase(process_cpu_seconds_total{job=\"api_dotnet-consumer-api\"}[1m])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -420,8 +445,8 @@
   "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "browser",
-  "title": "Dashboards",
+  "title": "Producer",
   "uid": "adpp17oo5jmyoa",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
