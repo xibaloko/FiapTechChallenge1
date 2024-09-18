@@ -8,6 +8,7 @@ using FiapTechChallenge.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
+using Prometheus;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
@@ -67,9 +68,41 @@ IHost host = Host.CreateDefaultBuilder(args)
             x.AddConsumer<DeleteContactConsumer>();
         });
 
-
+        services.AddHostedService<MetricsHostedService>();
 
     })
     .Build();
 
 host.Run();
+
+
+public class MetricsHostedService : IHostedService
+{
+    private IHostApplicationLifetime _lifetime;
+    private KestrelMetricServer _metricServer;
+
+    public MetricsHostedService(IHostApplicationLifetime lifetime)
+    {
+        _lifetime = lifetime;
+    }
+
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        // Inicia um servidor HTTP na porta 1234 expondo as métricas
+        _metricServer = new KestrelMetricServer(port: 4002);
+        _metricServer.Start();
+
+        _lifetime.ApplicationStopping.Register(() =>
+        {
+            _metricServer.Stop();
+        });
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _metricServer?.Stop();
+        return Task.CompletedTask;
+    }
+}
