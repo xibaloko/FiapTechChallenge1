@@ -1,0 +1,6 @@
+@FiapTechChallenge.Producer_HostAddress = http://localhost:5227
+
+GET {{FiapTechChallenge.Producer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
