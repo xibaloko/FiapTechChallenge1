@@ -1,0 +1,14 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: backend-api-producer
+  namespace: fiaptechchallenge
+spec:
+  selector:
+    app: backend-api-producer
+  ports:
+    - protocol: TCP
+      port: 4001
+      targetPort: 4001
+      nodePort: 30001
+  type: NodePort

@@ -13,24 +13,14 @@ spec:
       labels:
         app: backend-worker-consumer
     spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
       containers:
         - name: backend-worker-consumer
-          image: fiaptechchallenge.consumer:latest
+          image: heiterpm/fiaptechchallenge-consumer:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 4002
           env:
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Development"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend-worker-consumer
-  namespace: fiaptechchallenge
-spec:
-  selector:
-    app: backend-worker-consumer
-  ports:
-    - protocol: TCP
-      port: 4002
-      targetPort: 4002
+              value: "Production"

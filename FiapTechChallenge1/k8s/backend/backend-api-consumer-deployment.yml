@@ -1,0 +1,28 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-api-consumer
+  namespace: fiaptechchallenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-api-consumer
+  template:
+    metadata:
+      labels:
+        app: backend-api-consumer
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
+      containers:
+        - name: backend-worker-consumer
+          image: heiterpm/fiaptechchallenge-consumer-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://*:4000"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"

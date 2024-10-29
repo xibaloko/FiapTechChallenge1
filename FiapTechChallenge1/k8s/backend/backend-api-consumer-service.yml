@@ -1,0 +1,14 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: backend-api-consumer
+  namespace: fiaptechchallenge
+spec:
+  selector:
+    app: backend-api-consumer
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
+      nodePort: 30009
