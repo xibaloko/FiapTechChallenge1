@@ -1,0 +1,31 @@
+﻿# backend-api-producer-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-api-producer
+  namespace: fiaptechchallenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-api-producer
+  template:
+    metadata:
+      labels:
+        app: backend-api-producer
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
+      containers:
+        - name: backend-api-producer
+          image: heiterpm/fiaptechchallenge-producer:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4001
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: ASPNETCORE_URLS
+              value: "http://*:4001"
+            - name: MicrosoftSQLServer__ConnectionString
+              value: "Server=sql-server;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"

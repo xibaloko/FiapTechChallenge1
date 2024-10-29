@@ -1,0 +1,36 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-worker-consumer
+  namespace: fiaptechchallenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-worker-consumer
+  template:
+    metadata:
+      labels:
+        app: backend-worker-consumer
+    spec:
+      containers:
+        - name: backend-worker-consumer
+          image: fiaptechchallenge.consumer:latest
+          ports:
+            - containerPort: 4002
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-worker-consumer
+  namespace: fiaptechchallenge
+spec:
+  selector:
+    app: backend-worker-consumer
+  ports:
+    - protocol: TCP
+      port: 4002
+      targetPort: 4002
