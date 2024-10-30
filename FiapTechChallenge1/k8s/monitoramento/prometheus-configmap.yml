@@ -29,19 +29,19 @@ data:
           - targets:
               - localhost:9090
 
-      - job_name: 'backend-api-consumer'
+      - job_name: 'api_dotnet-consumer-api'
         scrape_interval: 5s  # Intervalo de coleta para este job específico
         static_configs:
           - targets:
               - backend-api-consumer:4000
 
-      - job_name: 'backend-worker-consumer'
+      - job_name: 'api_dotnet-consumer'
         scrape_interval: 5s  # Intervalo de coleta para este job específico
         static_configs:
           - targets:
               - backend-worker-consumer:4002
 
-      - job_name: 'backend-api-producer'
+      - job_name: 'api_dotnet-producer'
         scrape_interval: 5s  # Intervalo de coleta para este job específico
         static_configs:
           - targets:

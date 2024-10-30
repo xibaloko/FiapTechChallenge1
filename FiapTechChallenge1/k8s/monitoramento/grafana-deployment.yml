@@ -24,9 +24,9 @@ spec:
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: "grafana"
           volumeMounts:
-            - mountPath: /etc/grafana/provisioning/datasources
-              name: grafana-storage
+            - name: grafana-datasource
+              mountPath: /etc/grafana/provisioning/datasources/
       volumes:
-        - name: grafana-storage
-          persistentVolumeClaim:
-            claimName: grafana-data-pvc
+        - name: grafana-datasource
+          configMap:
+            name: grafana-datasource
