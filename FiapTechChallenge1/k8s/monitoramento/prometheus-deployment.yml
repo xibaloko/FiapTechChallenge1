@@ -21,7 +21,13 @@ spec:
           volumeMounts:
             - mountPath: /etc/prometheus
               name: prometheus-storage
+            - mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+              name: prometheus-config
       volumes:
         - name: prometheus-storage
           persistentVolumeClaim:
             claimName: prom-data-pvc
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
