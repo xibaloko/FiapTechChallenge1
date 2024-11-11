@@ -4,7 +4,7 @@ metadata:
   name: backend-worker-consumer
   namespace: fiaptechchallenge
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend-worker-consumer
