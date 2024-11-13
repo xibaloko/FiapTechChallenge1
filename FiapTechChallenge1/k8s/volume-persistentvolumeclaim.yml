@@ -1,48 +1,47 @@
-﻿apiVersion: v1
-kind: PersistentVolumeClaim
+﻿apiVersion: v1  # Define a versão da API usada para criar o PersistentVolumeClaim
+kind: PersistentVolumeClaim  # Especifica o tipo de recurso como PersistentVolumeClaim, que solicita armazenamento persistente
 metadata:
-  name: sql-data-pvc
-  namespace: fiaptechchallenge
+  name: sql-data-pvc  # Nome do PersistentVolumeClaim, usado para identificar o recurso (para o SQL)
+  namespace: fiaptechchallenge  # Namespace onde o PersistentVolumeClaim será criado
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce  # Define o modo de acesso: o volume pode ser montado como leitura/escrita por um único nó
   resources:
     requests:
-      storage: 100M
+      storage: 100M  # Solicita 100 megabytes de espaço de armazenamento
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: v1  # Define a versão da API usada para criar o PersistentVolumeClaim
+kind: PersistentVolumeClaim  # Especifica o tipo de recurso como PersistentVolumeClaim
 metadata:
-  name: grafana-data-pvc
-  namespace: fiaptechchallenge
+  name: grafana-data-pvc  # Nome do PersistentVolumeClaim para Grafana
+  namespace: fiaptechchallenge  # Namespace onde o PersistentVolumeClaim será criado
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce  # O volume pode ser montado como leitura/escrita por um único nó
   resources:
     requests:
-      storage: 100M
+      storage: 100M  # Solicita 100 megabytes de espaço de armazenamento
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: v1  # Define a versão da API usada para criar o PersistentVolumeClaim
+kind: PersistentVolumeClaim  # Especifica o tipo de recurso como PersistentVolumeClaim
 metadata:
-  name: rabbitmq-data-pvc
-  namespace: fiaptechchallenge
+  name: rabbitmq-data-pvc  # Nome do PersistentVolumeClaim para RabbitMQ
+  namespace: fiaptechchallenge  # Namespace onde o PersistentVolumeClaim será criado
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce  # O volume pode ser montado como leitura/escrita por um único nó
   resources:
     requests:
-      storage: 100M
-
+      storage: 100M  # Solicita 100 megabytes de espaço de armazenamento
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: v1  # Define a versão da API usada para criar o PersistentVolumeClaim
+kind: PersistentVolumeClaim  # Especifica o tipo de recurso como PersistentVolumeClaim
 metadata:
-  name: prom-data-pvc
-  namespace: fiaptechchallenge
+  name: prom-data-pvc  # Nome do PersistentVolumeClaim para Prometheus
+  namespace: fiaptechchallenge  # Namespace onde o PersistentVolumeClaim será criado
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce  # O volume pode ser montado como leitura/escrita por um único nó
   resources:
     requests:
-      storage: 100M
+      storage: 100M  # Solicita 100 megabytes de espaço de armazenamento

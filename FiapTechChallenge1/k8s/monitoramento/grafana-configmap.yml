@@ -1,16 +1,16 @@
-﻿apiVersion: v1
-kind: ConfigMap
+﻿apiVersion: v1  # Define a versão da API usada para criar o ConfigMap
+kind: ConfigMap  # Especifica o tipo de recurso como ConfigMap, que armazena dados de configuração em pares chave-valor
 metadata:
-  name: grafana-datasource
-  namespace: fiaptechchallenge
+  name: grafana-datasource  # Nome do ConfigMap, usado para identificar o recurso
+  namespace: fiaptechchallenge  # Namespace onde o ConfigMap será criado
 data:
-  datasource.yml: |
-    apiVersion: 1
+  datasource.yml: |  # Define o conteúdo da configuração, especificado em um bloco de texto multilinha
+    apiVersion: 1  # Versão da API para a configuração do datasource do Grafana
 
-    datasources:
-      - name: Prometheus
-        type: prometheus
-        url: http://prometheus:9090
-        isDefault: true
-        access: proxy
-        editable: true
+    datasources:  # Lista de fontes de dados
+      - name: Prometheus  # Nome da fonte de dados
+        type: prometheus  # Tipo da fonte de dados, que é Prometheus
+        url: http://prometheus:9090  # URL onde o Prometheus está disponível
+        isDefault: true  # Define esta fonte de dados como a padrão
+        access: proxy  # Especifica o método de acesso; 'proxy' significa que o Grafana atuará como proxy
+        editable: true  # Indica que a configuração da fonte de dados é editável no Grafana

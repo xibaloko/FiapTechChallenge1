@@ -1,28 +1,28 @@
-﻿apiVersion: apps/v1
-kind: Deployment
+﻿apiVersion: apps/v1  # Especifica a versão da API usada para criar o Deployment
+kind: Deployment  # Define o tipo de recurso como Deployment, que gerencia a criação e atualização de pods
 metadata:
-  name: backend-api-consumer
-  namespace: fiaptechchallenge
+  name: backend-api-consumer  # Nome do Deployment
+  namespace: fiaptechchallenge  # Namespace onde o Deployment será criado
 spec:
-  replicas: 1
+  replicas: 1  # Define o número de réplicas do pod a serem executadas; neste caso, uma única instância
   selector:
     matchLabels:
-      app: backend-api-consumer
+      app: backend-api-consumer  # Rótulo que o Deployment usará para identificar os pods que ele gerencia
   template:
     metadata:
       labels:
-        app: backend-api-consumer
+        app: backend-api-consumer  # Rótulo aplicado aos pods criados por este Deployment
     spec:
       imagePullSecrets:
-        - name: dockerhub-secret
+        - name: dockerhub-secret  # Referência a um segredo que contém as credenciais para puxar a imagem do Docker Hub
       containers:
-        - name: backend-worker-consumer
-          image: heiterpm/fiaptechchallenge-consumer-api:latest
-          imagePullPolicy: Always
+        - name: backend-worker-consumer  # Nome do contêiner
+          image: heiterpm/fiaptechchallenge-consumer-api:latest  # Imagem Docker a ser usada, incluindo a tag 'latest'
+          imagePullPolicy: Always  # Define que a imagem deve ser sempre puxada para garantir a versão mais recente
           ports:
-            - containerPort: 4000
+            - containerPort: 4000  # Porta exposta pelo contêiner para comunicação
           env:
-            - name: ASPNETCORE_URLS
-              value: "http://*:4000"
-            - name: ASPNETCORE_ENVIRONMENT
-              value: "Production"
+            - name: ASPNETCORE_URLS  # Nome da variável de ambiente
+              value: "http://*:4000"  # Valor da variável que define o endereço e porta onde a aplicação ASP.NET Core estará ouvindo
+            - name: ASPNETCORE_ENVIRONMENT  # Nome da variável de ambiente
+              value: "Production"  # Define o ambiente como 'Production', otimizando a aplicação para produção
