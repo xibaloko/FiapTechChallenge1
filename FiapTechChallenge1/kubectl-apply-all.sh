@@ -1,3 +1,5 @@
+kubectl apply -f ./k8s/namespace.yml
+kubectl apply -f ./k8s/volume-persistentvolumeclaim.yml
 kubectl apply -f ./k8s/backend/backend-api-consumer-deployment.yml
 kubectl apply -f ./k8s/backend/backend-api-consumer-service.yml
 kubectl apply -f ./k8s/backend/backend-api-producer-deployment.yml
@@ -14,5 +16,3 @@ kubectl apply -f ./k8s/monitoramento/prometheus-deployment.yml
 kubectl apply -f ./k8s/monitoramento/prometheus-service.yml
 kubectl apply -f ./k8s/rabbit/rabbitmq-deployment.yml
 kubectl apply -f ./k8s/rabbit/rabbitmq-service.yml
-kubectl apply -f ./k8s/namespace.yml
-kubectl apply -f ./k8s/volume-persistentvolumeclaim.yml
