@@ -1,0 +1,14 @@
+﻿apiVersion: v1  # Define a versão da API usada para criar o Service
+kind: Service  # Especifica o tipo de recurso como Service, que expõe a aplicação para comunicação na rede
+metadata:
+  name: backend-api-consumer  # Nome do Service
+  namespace: fiaptechchallenge  # Namespace onde o Service será criado
+spec:
+  selector:
+    app: backend-api-consumer  # Seleciona os pods com o rótulo 'app: backend-api-consumer' para serem gerenciados por este Service
+  type: NodePort  # Define o tipo do Service como NodePort, que expõe o serviço em uma porta específica em cada nó do cluster
+  ports:
+    - protocol: TCP  # Especifica o protocolo usado, que é TCP
+      port: 4000  # Porta em que o Service estará disponível internamente no cluster
+      targetPort: 4000  # Porta no contêiner para a qual o tráfego será direcionado
+      nodePort: 30009  # Porta exposta no nó para acesso externo ao serviço (deve estar no intervalo 30000-32767)

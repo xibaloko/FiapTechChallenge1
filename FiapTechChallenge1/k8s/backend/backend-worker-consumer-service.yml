@@ -1,0 +1,12 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: backend-worker-consumer
+  namespace: fiaptechchallenge
+spec:
+  selector:
+    app: backend-worker-consumer
+  ports:
+    - protocol: TCP
+      port: 4002
+      targetPort: 4002

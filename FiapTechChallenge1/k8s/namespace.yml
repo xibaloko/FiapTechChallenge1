@@ -1,0 +1,4 @@
+﻿apiVersion: v1  # Define a versão da API usada para criar o Namespace
+kind: Namespace  # Especifica o tipo de recurso como Namespace, que isola recursos em um cluster
+metadata:
+  name: fiaptechchallenge  # Nome do Namespace, que será usado para organizar e isolar os recursos dentro do cluster

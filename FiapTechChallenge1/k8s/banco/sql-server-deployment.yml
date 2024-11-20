@@ -1,0 +1,34 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sql-server
+  namespace: fiaptechchallenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-server
+  template:
+    metadata:
+      labels:
+        app: sql-server
+    spec:
+      containers:
+        - name: sql-server
+          image: mcr.microsoft.com/mssql/server:2019-latest
+          ports:
+            - containerPort: 1433
+          env:
+            - name: SA_PASSWORD
+              value: "SqlServer2019!"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_PID
+              value: "Developer"
+          volumeMounts:
+            - mountPath: /var/opt/mssql
+              name: sql-storage
+      volumes:
+        - name: sql-storage
+          persistentVolumeClaim:
+            claimName: sql-data-pvc
