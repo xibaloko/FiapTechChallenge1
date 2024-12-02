@@ -29,3 +29,10 @@ spec:
               value: "http://*:4001"
             - name: MicrosoftSQLServer__ConnectionString
               value: "Server=sql-server;Database=TechChallenge;User Id=sa;Password=SqlServer2019!;TrustServerCertificate=True;"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
